@@ -10,7 +10,7 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 triples = LOAD 'openphacts.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 triplesFiltered = FILTER triples BY sub is null or pred is null or obj is null;
 STORE triplesFiltered INTO 'triplesFiltered' USING PigStorage();
---returns no results!!
+--so, luckily no null values after loading
 
 
 
@@ -26,5 +26,8 @@ STORE triplesFiltered INTO 'triplesFiltered' USING PigStorage();
 <http://www.scai.fraunhofer.de/rdf/entity/ExactQualifier_NormalizedNamedEntity_19139133_ProMiner_DBA000072>     <http://purl.org/ao/context>  <http://www.scai.fraunhofer.de/rdf/entity/OffsetStartEndTextSelector_19139133_610_621_0.0>
 <http://www.scai.fraunhofer.de/rdf/entity/ExactQualifier_NormalizedNamedEntity_19139133_ProMiner_DBA000072>     <http://purl.org/ao/hasTopic> <http://www.scai.fraunhofer.de/rdf/prominer/DBA000072>
 <http://www.scai.fraunhofer.de/rdf/entity/ExactQualifier_NormalizedNamedEntity_19139133_ProMiner_DBA000072>     <http://purl.org/ao/onSourceDocument> <http://www.ncbi.nlm.nih.gov/pubmed/19139133>
+--So, all items are still here
 
+
+--go 
 

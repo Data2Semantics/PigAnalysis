@@ -15,9 +15,9 @@ if useLongHash:
 if int(float(sample)) != 1:
     outputFile += "_" + sample
 pigScript = """
-REGISTER lib/datafu.jar;
+REGISTER /home/lrd900/code/datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
 DEFINE UnorderedPairs datafu.pig.bags.UnorderedPairs();
-REGISTER lib/d2s4pig-1.0.jar;
+REGISTER /home/lrd900/code/d2s4pig/target/d2s4pig-1.0.jar
 DEFINE NtLoader com.data2semantics.pig.loaders.NtLoader();
 DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 """
