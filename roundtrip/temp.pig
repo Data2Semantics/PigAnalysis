@@ -1,8 +1,8 @@
 ---check why <http://www.scai.fraunhofer.de/rdf/entity/ExactQualifier_NormalizedNamedEntity_19139133_ProMiner_DBA000072> has 2 items per triple instead of 3 after loading it in ntloader
 
-REGISTER lib/datafu.jar;
+REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
 DEFINE UnorderedPairs datafu.pig.bags.UnorderedPairs();
-REGISTER lib/d2s4pig-1.0.jar;
+REGISTER d2s4pig/target/d2s4pig-1.0.jar
 DEFINE NtLoader com.data2semantics.pig.loaders.NtLoader();
 DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 
