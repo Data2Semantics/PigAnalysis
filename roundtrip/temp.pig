@@ -9,17 +9,25 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 
 triples = LOAD 'openphacts.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 triplesFiltered = FILTER triples BY sub is null or pred is null or obj is null;
-STORE triplesFiltered INTO 'triplesFiltered' USING PigStorage();
---so, luckily no null values after loading
+rmf triplesFilteredByNulls_all
+STORE triplesFiltered INTO 'triplesFilteredByNulls_all' USING PigStorage();
+---everything is fine: no nulls
+
+
+triples = LOAD 'openphacts.nt_sample_0.1' USING PigStorage() AS (sub:chararray, pred:chararray, obj:chararray);
+triplesFiltered = FILTER triples BY sub is null or pred is null or obj is null;
+rmf triplesFilteredByNulls_0.1
+STORE triplesFiltered INTO 'triplesFilteredByNulls_0.1' USING PigStorage();
 
 
 
 
---lookup orig data for uri which goes wrong
-triples = LOAD 'openphacts.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
+
+---lookup orig data for uri which goes wrong
+triples = LOAD 'openphacts.nt_sample_0.1' USING PigStorage() AS (sub:chararray, pred:chararray, obj:chararray);
 triplesFiltered = FILTER triples BY sub matches '.*ExactQualifier_NormalizedNamedEntity_19139133_ProMiner_DBA000072.*' or obj matches '.*ExactQualifier_NormalizedNamedEntity_19139133_ProMiner_DBA000072.*';
-STORE triplesFiltered INTO 'triplesFiltered' USING PigStorage();
---returns:
+STORE triplesFiltered INTO 'triplesFilteredByUriMatch_0.1' USING PigStorage();
+---returns:
 <http://www.scai.fraunhofer.de/rdf/intern/pubmed_subset/medline11n0955.xml_ProMiner>    <http://purl.org/ao/item>       <http://www.scai.fraunhofer.de/rdf/entity/ExactQualifier_NormalizedNamedEntity_19139133_ProMiner_DBA000072>
 <http://www.scai.fraunhofer.de/rdf/entity/ExactQualifier_NormalizedNamedEntity_19139133_ProMiner_DBA000072>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>     <http://www.scai.fraunhofer.de/prominer/vocabular/pao#NormalizedNamedEntity>
 <http://www.scai.fraunhofer.de/rdf/entity/ExactQualifier_NormalizedNamedEntity_19139133_ProMiner_DBA000072>     <http://www.w3.org/1999/02/22-rdf-syntax-ns#type>     <http://purl.org/ao/types/ExactQualifier>
@@ -29,5 +37,6 @@ STORE triplesFiltered INTO 'triplesFiltered' USING PigStorage();
 --So, all items are still here
 
 
---go 
+
+
 

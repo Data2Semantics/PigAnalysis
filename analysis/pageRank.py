@@ -55,8 +55,8 @@ STORE max_diff INTO '$max_diff';
 """)
 
 d = 0.5 #damping factor
-docs_in= "unweightedLitAsNodeGrouped_0.1"
-out_dir = "pagerank_0.1/"
+docs_in= "dbp.nt_unweightedLitAsNodeGrouped"
+out_dir = "dbp.nt_pagerank/"
 inputType = "chararray" #use long if we have hashed urls
 for i in range(10):
     docs_out = out_dir + "pagerank_data_" + str(i + 1)

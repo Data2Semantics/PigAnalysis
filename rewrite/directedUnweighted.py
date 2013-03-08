@@ -2,10 +2,10 @@
 from org.apache.pig.scripting import Pig
 
 
-inputFile = "openphacts.nt"
-outputFile = "unweightedLitAsNode"
-sampleGraphOutput = ""
-sample = "0.1" #0.0000001: 76 items, 0.0001: 75745 items
+inputFile = "dbpedia.nt"
+outputFile = inputFile + "_unweightedLitAsNode"
+sampleGraphOutput = "placeholder"
+sample = "1" #0.0000001: 76 items, 0.0001: 75745 items
 groupResults = True
 useLongHash = False
 if groupResults:
