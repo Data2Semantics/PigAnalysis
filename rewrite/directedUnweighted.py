@@ -14,6 +14,7 @@ if useLongHash:
     outputFile += "Hashed"
 if int(float(sample)) != 1:
     outputFile += "_" + sample
+    sampleGraphOutput = inputFile + "_sample_" + sample;
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
 DEFINE UnorderedPairs datafu.pig.bags.UnorderedPairs();
