@@ -2,7 +2,7 @@
 from org.apache.pig.scripting import Pig
 
 
-inputFile = "dbpedia.nt"
+inputFile = "dbp.nt"
 outputFile = inputFile + "_unweightedLitAsNode"
 sampleGraphOutput = "placeholder"
 sample = "1" #0.0000001: 76 items, 0.0001: 75745 items
