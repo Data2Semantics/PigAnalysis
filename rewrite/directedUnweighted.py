@@ -6,7 +6,7 @@ inputFile = "dbp.nt"
 outputFile = inputFile + "_unweightedLitAsNode"
 sampleGraphOutput = "placeholder"
 sample = "1" #0.0000001: 76 items, 0.0001: 75745 items
-groupResults = True
+groupResults = False
 useLongHash = False
 if groupResults:
     outputFile += "Grouped"
@@ -52,10 +52,10 @@ rewrittenGraph = FOREACH rdfGraphGrouped GENERATE group, 1, rdfGraph.$2;
 """
 else:
     if useLongHash:
-        pigScript += """rewrittenGraph = FOREACH rdfGraph GENERATE $longHash(sub), 1, $longHash(obj);
+        pigScript += """rewrittenGraph = FOREACH rdfGraph GENERATE $longHash(sub), $longHash(obj), 1;
 """
     else:
-        pigScript += """rewrittenGraph = FOREACH rdfGraph GENERATE sub, 1, obj;
+        pigScript += """rewrittenGraph = FOREACH rdfGraph GENERATE sub, obj, 1;
 """
 
 

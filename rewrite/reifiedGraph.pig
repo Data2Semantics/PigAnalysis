@@ -4,17 +4,10 @@ REGISTER d2s4pig/target/d2s4pig-1.0.jar
 DEFINE NtLoader com.data2semantics.pig.loaders.NtLoader();
 DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 
-largeGraph = LOAD 'openphacts.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
+graph = LOAD 'dbp.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 --largeGraph = SAMPLE largeGraph 0.0000001; --0.0000001: 76 items
-largeGraph = SAMPLE largeGraph 0.001; --0.0001: 75745 items
+--largeGraph = SAMPLE largeGraph 0.001; --0.0001: 75745 items
 --dump largeGraph;
-
-rdfGraph = FOREACH rdfGraphText GENERATE LONGHASH(sub) AS sub:long, LONGHASH(pred) AS pred:long, LONGHASH(obj) AS obj:long;
-
-dictionaryLarge = FOREACH rdfGraphText GENERATE FLATTEN(TOBAG(TOTUPLE(LONGHASH(sub), sub), TOTUPLE(LONGHASH(pred), pred),TOTUPLE(LONGHASH(obj), obj)));
-dictionary = DISTINCT dictionaryLarge;
-
-
 
 /**
  * CREATING A NETWORK OF (SPO) NODES
@@ -86,35 +79,31 @@ spoGraph = UNION spoSubjectGraph, spoPredicateGraph, spoObjectGraph;
 --	--check if there exists something in spoGraph with the inverse
 --	generate part1, part2;
 --}
-weightedSpoGraph = FOREACH spoGraph GENERATE $0, $1, 1; --just use a weight of 1 for each node for now... (do the thing above later)
+--weightedSpoGraph = FOREACH spoGraph GENERATE $0, $1, 1; --just use a weight of 1 for each node for now... (do the thing above later)
 --
 --
 
---hashed and sorted tuples (lowest hash first)
-sortedSpoGraph = FOREACH spoGraph {
-	sub1 = CONCAT((chararray)$0.sub, ',');
-	pred1 = CONCAT((chararray)$0.pred, ',');
-	obj1 = CONCAT((chararray)$0.obj, ',');
-	part1 = CONCAT(sub1, CONCAT(pred1, obj1));
-	part1Hash = (long)LONGHASH(part1);
+--sorted tuples (lowest hash first)
+concatSpoGraph = FOREACH spoGraph {
+	sub1 = CONCAT((chararray)$0.sub, '@#@#');
+	pred1 = CONCAT((chararray)$0.pred, '@#@#');
+	part1 = CONCAT(sub1, CONCAT(pred1, $0.obj));
+	part1Hash = (long)LONGHASH(part2);
 	
-	sub2 = CONCAT((chararray)$1.sub, ',');
-	pred2 = CONCAT((chararray)$1.pred, ',');
-	obj2= CONCAT((chararray)$1.obj, ',');
-	part2 = CONCAT(sub2, CONCAT(pred2, obj2));
+	sub2 = CONCAT((chararray)$1.sub, '@#@#');
+	pred2 = CONCAT((chararray)$1.pred, '@#@#');
+	part2 = CONCAT(sub2, CONCAT(pred2, $1.obj));
 	part2Hash = (long)LONGHASH(part2);
-	--hashing hashes here....
-	generate MIN(TOBAG(part1Hash, part2Hash)) as spo1:long, MAX(TOBAG(part1Hash, part2Hash)) as spo2:long ;
+	
+	generate (part1Hash < part2Hash? part1: part2)}) as spo1:chararray, (part1Hash < part2Hash? part2: part1)}) as spo2:chararray ;
 }
 
-sortedSpoGraphGrouped = GROUP sortedSpoGraph BY (spo1, spo2);
-weightedSpoGraph = FOREACH sortedSpoGraphGrouped GENERATE FLATTEN(group), COUNT(sortedSpoGraph);
+--sortedSpoGraphGrouped = GROUP sortedSpoGraph BY (spo1, spo2);
+--weightedSpoGraph = FOREACH sortedSpoGraphGrouped GENERATE FLATTEN(group), COUNT(sortedSpoGraph);
 
+distinctSpoGraph = DISTINCT concatSpoGraph;
 
---rm dictionary;
-STORE dictionary INTO 'dictionary' USING PigStorage('\t');
---rm spoGraph;
-STORE weightedSpoGraph INTO 'spoGraph' USING PigStorage('\t');
+STORE distinctSpoGraph INTO 'spoGraph' USING PigStorage();
 
 
 
