@@ -9,9 +9,9 @@ if (len(sys.argv) == 1):
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
 if len(sys.argv) > 2:
-    percentage = str((int(sys.argv[2]) / 100))
+    percentage = str((double(sys.argv[2] + ".0") / 100.0))
 outputFile = inputFile.rsplit('.',1)[0] + "_" + percentage + ".nt" 
-    
+ 
     
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
