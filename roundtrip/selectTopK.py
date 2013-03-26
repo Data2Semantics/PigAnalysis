@@ -3,6 +3,7 @@ from org.apache.pig.scripting import Pig
 import sys
 
 inputFile = "dbp/roundtrip/directed_pagerank.nt"
+outputFile = ""
 percentage = "0.5";
 exactK = 0
 if (len(sys.argv) == 1):
@@ -13,7 +14,10 @@ if len(sys.argv) > 2:
     if (sys.argv[2][-1:]):
         exactK = int(sys.argv[2][:-1])
     percentage = str((float(sys.argv[2] + ".0") / 100.0))
- 
+if exactK > 0:
+    outputFile = inputFile.rsplit('.',1)[0] + "_" + str(exactK)
+else:
+    outputFile = inputFile.rsplit('.',1)[0] + "_" + percentage + ".nt"  
     
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
@@ -39,15 +43,14 @@ pigScript += """orderedTriples = ORDER rankedTriples BY ranking DESC;
 
 if exactK > 0:
     pigScript += """
-limitTriples = LIMIT orderedTriples """ + exactK + """;"""
+storeTriples = LIMIT orderedTriples """ + exactK + """;"""
 else:
     pigScript += """
-limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);"""
+limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
+storeTriples = FOREACH limitTriples GENERATE $0, $1, $2, '.' ;"""
     
 
-
 pigScript += """
-storeTriples = FOREACH limitTriples GENERATE $0, $1, $2, '.' ;
 rmf $outputFile
 STORE storeTriples INTO '$outputFile' USING PigStorage();
 """
