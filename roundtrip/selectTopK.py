@@ -16,7 +16,7 @@ if len(sys.argv) > 2:
     else:
         percentage = str((float(sys.argv[2] + ".0") / 100.0))
 if exactK > 0:
-    outputFile = inputFile.rsplit('.',1)[0] + "_" + str(exactK)
+    outputFile = inputFile.rsplit('.',1)[0] + "_" + str(exactK) + "n"
 else:
     outputFile = inputFile.rsplit('.',1)[0] + "_" + percentage + ".nt"  
     
