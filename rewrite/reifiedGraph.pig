@@ -4,7 +4,7 @@ REGISTER d2s4pig/target/d2s4pig-1.0.jar
 DEFINE NtLoader com.data2semantics.pig.loaders.NtLoader();
 DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 
-origGraph = LOAD 'dbp.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
+origGraph = LOAD 'dbp/dbp.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 rdfGraph = DISTINCT origGraph;---to reduce size. there might be some redundant triples
 
 --largeGraph = SAMPLE largeGraph 0.0000001; --0.0000001: 76 items
@@ -105,7 +105,7 @@ concatSpoGraph = FOREACH spoGraph {
 
 distinctSpoGraph = DISTINCT concatSpoGraph;
 
-STORE distinctSpoGraph INTO 'spoGraph' USING PigStorage();
+STORE distinctSpoGraph INTO 'dbp/rewrite/reified_unweighted' USING PigStorage();
 
 
 
