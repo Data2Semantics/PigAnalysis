@@ -4,7 +4,7 @@ import sys
 
 
 inputFile = "dbp/dbp.nt"
-outputFile = "dbp/rewrite/ps-po"
+outputFile = "dbp/rewrite/ps-po_unweighted"
 
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
