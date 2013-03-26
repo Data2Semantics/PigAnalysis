@@ -37,3 +37,6 @@ storeTriples = FOREACH limitTriples GENERATE $0, $1, $2, '.' ;
 rmf $outputFile
 STORE storeTriples INTO '$outputFile' USING PigStorage();
 """
+
+P = Pig.compile(pigScript)
+stats = P.bind().runSingle()
