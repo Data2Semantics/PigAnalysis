@@ -44,7 +44,7 @@ pigScript += """orderedTriples = ORDER rankedTriples BY ranking DESC;
 
 if exactK > 0:
     pigScript += """
-storeTriples = LIMIT orderedTriples """ + exactK + """;"""
+storeTriples = LIMIT orderedTriples """ + str(exactK) + """;"""
 else:
     pigScript += """
 limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
