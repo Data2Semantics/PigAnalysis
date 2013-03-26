@@ -1,4 +1,4 @@
-
+#!/bin/bash
 
 #pig pigAnalysis/roundtrip/toTripleRankings.py dbp/dbp.nt dbp/analysis/dbp_s-o_unweighted_litAsNode/directed_indegree dbp/roundtrip/dbp_s-o_unweighted_litAsNode/directed_indegree;
 pig pigAnalysis/roundtrip/toTripleRankings.py dbp/dbp.nt dbp/analysis/dbp_s-o_unweighted_litAsNode/directed_outdegree dbp/roundtrip/dbp_s-o_unweighted_litAsNode/directed_outdegree;
