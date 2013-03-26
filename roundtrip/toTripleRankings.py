@@ -26,7 +26,7 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 """
 
 pigScript += """
-triples = LOAD '$inputFile' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
+triples = LOAD 'origGraph' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 rankedResources = LOAD '$rankingsFile' USING PigStorage() AS (resource:chararray, ranking:double);
 
 subGroup = COGROUP triples by sub, rankedResources by resource;
