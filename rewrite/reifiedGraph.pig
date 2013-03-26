@@ -4,7 +4,9 @@ REGISTER d2s4pig/target/d2s4pig-1.0.jar
 DEFINE NtLoader com.data2semantics.pig.loaders.NtLoader();
 DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 
-rdfGraph = LOAD 'dbp.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
+origGraph = LOAD 'dbp.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
+rdfGraph = DISTINCT origGraph;---to reduce size. there might be some redundant triples
+
 --largeGraph = SAMPLE largeGraph 0.0000001; --0.0000001: 76 items
 --largeGraph = SAMPLE largeGraph 0.001; --0.0001: 75745 items
 --dump largeGraph;

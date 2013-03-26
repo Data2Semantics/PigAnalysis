@@ -1,0 +1,6 @@
+
+pig pigAnalysis/roundtrip/toTripleRankings dbp/dbp.nt dbp/analysis/directed_betweenness_cutoff5.nt dbp/roundtrip/directed_betweenness_cutoff5
+
+
+
+pig pigAnalysis/roundtrip/selectTopK dbp/roundtrip/directed_betweenness_cutoff5 50;

@@ -5,7 +5,7 @@ DEFINE NtLoader com.data2semantics.pig.loaders.NtLoader();
 DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 
 
-rankedTriples = LOAD 'pagerank_tripleswithranking' USING PigStorage() AS (sub:chararray, pred:chararray, obj:chararray, ranking:double);
+rankedTriples = LOAD 'dbp/roundtrip/directed_pagerank.nt' USING PigStorage() AS (sub:chararray, pred:chararray, obj:chararray, ranking:double);
 
 rankedTriplesGrouped = group rankedTriples all;
 tripleCount = foreach rankedTriplesGrouped generate COUNT(rankedTriples) as count;
@@ -17,5 +17,5 @@ orderedTriples = ORDER rankedTriples BY ranking DESC;
 limitTriples = LIMIT orderedTriples (int)(tripleCount.count * 0.5); ---50 percent
 
 storeTriples = FOREACH limitTriples GENERATE $0, $1, $2, '.' ;
-rmf pagerank_rankedtriples_0.5
-STORE storeTriples INTO 'pagerank_rankedtriples_0.5' USING PigStorage();
+rmf dbp/roundtrip/directed_pagerank.nt_0.5
+STORE storeTriples INTO 'dbp/roundtrip/directed_pagerank.nt_0.5' USING PigStorage();
