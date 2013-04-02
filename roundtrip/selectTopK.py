@@ -16,9 +16,9 @@ if len(sys.argv) > 2:
     else:
         percentage = str((float(sys.argv[2] + ".0") / 100.0))
 if exactK > 0:
-    outputFile = inputFile.rsplit('.',1)[0] + "_" + str(exactK) + "n"
+    outputFile = inputFile + "_" + str(exactK) + "n.nt"
 else:
-    outputFile = inputFile.rsplit('.',1)[0] + "_" + percentage + ".nt"  
+    outputFile = inputFile + "_" + percentage + ".nt"  
     
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
@@ -33,20 +33,15 @@ rankedTriples = LOAD '$inputFile' USING PigStorage() AS (sub:chararray, pred:cha
 
 rankedTriplesGrouped = group rankedTriples all;"""
 
-if exactK > 0:
-    pigScript += """
-    tripleCount = foreach rankedTriplesGrouped generate COUNT(rankedTriples) as count;"""
-
-
-
-pigScript += """orderedTriples = ORDER rankedTriples BY ranking DESC;
-"""
+pigScript += """
+orderedTriples = ORDER rankedTriples BY ranking DESC;"""
 
 if exactK > 0:
     pigScript += """
 storeTriples = LIMIT orderedTriples """ + str(exactK) + """;"""
 else:
     pigScript += """
+tripleCount = foreach rankedTriplesGrouped generate COUNT(rankedTriples) as count;
 limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
 storeTriples = FOREACH limitTriples GENERATE $0, $1, $2, '.' ;"""
     
