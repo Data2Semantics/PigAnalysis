@@ -3,8 +3,8 @@ from org.apache.pig.scripting import Pig
 import sys
 
 origGraph = "dbp/dbp.nt"
-rankingsFile = "dbp/analysis/directed_betweenness_cutoff5.nt"
-outputFile = "dbp/roundtrip/directed_betweenness_cutoff5"
+rankingsFile = "dbp/analysis/dbp_s-o_unweighted_noLit/directed_indegree"
+outputFile = "dbp/roundtrip/dbp_s-o_unweighted_noLit/directed_indegree"
 
 if (len(sys.argv) == 1):
 	print "arg1: orig graph (e.g." + origGraph + "), arg2: file with rankings (e.g. "+rankingsFile + "), arg3: outputfile (e.g."+outputFile + ")"
