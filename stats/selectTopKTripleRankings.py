@@ -11,7 +11,7 @@ if (len(sys.argv) <= 3):
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
 if len(sys.argv) > 2:
-    inputFile = sys.argv[1]
+    outputFile = sys.argv[2]
 if len(sys.argv) > 3:
     if (sys.argv[3][-1:] == "n"):
         exactK = int(sys.argv[3][:-1])
