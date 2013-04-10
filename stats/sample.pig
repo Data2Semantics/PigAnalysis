@@ -7,7 +7,7 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 largeGraph = LOAD 'dbp/dbp.nt' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 rdfGraph = SAMPLE largeGraph 0.5; 
 rmf dbp/dbp_sample_0.5.nt
-STORE storeTriples INTO 'dbp/dbp_sample_0.5.nt' USING PigStorage();
+STORE rdfGraph INTO 'dbp/dbp_sample_0.5.nt' USING PigStorage();
 
 
 
