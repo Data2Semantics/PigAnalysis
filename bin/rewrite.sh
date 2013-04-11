@@ -30,14 +30,16 @@ if [ -z "$disableCat" ]; then
 	hadoopLs "$dataset/rewrite";
 	for dir in "${hadoopLs[@]}"; do
 		basename=`basename "$dir"`;
-		targetDir="~/rProject/$basename"
-		if [ ! -d "$targetDir" ]; then
-			`mkdir $targetDir`;
-		fi
-		targetFile="$targetDir/input"
-		echo "Catting for rewrite method $basename";
-		echo "hadoop fs -cat $dir/part* > $targetFile";
-		hadoop fs -cat $dir/part* > $targetFile;
+        targetDir="${HOME}/rProject/$basename"
+        if [ ! -d "$targetDir" ]; then
+                echo "dir $targetDir does not exist. creating one"
+                echo "mkdir $targetDir"
+                mkdir $targetDir;
+        fi
+        targetFile="$targetDir/input"
+        echo "Catting for rewrite method $basename";
+        echo "hadoop fs -cat $dir/part* > $targetFile";
+        hadoop fs -cat $dir/part* > $targetFile;
 	done
 fi
 
