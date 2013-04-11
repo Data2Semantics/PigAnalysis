@@ -22,7 +22,7 @@ rDir="${HOME}/rProject"
 
 cmd="find $rDir -maxdepth 1 -type d -regex '^$rDir/$dataset.*'"
 rewriteDirs=`eval $cmd`
-while read -r $rewriteMethod; do
+while read -r rewriteMethod; do
         echo "adding analysis $rewriteMethod";
 		analysisFiles=`find $rDir/output`
 		echo $analysisFiles
