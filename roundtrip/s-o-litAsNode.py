@@ -6,15 +6,15 @@ origGraph = "dbp/dbp.nt"
 rankingsFile = "dbp/analysis/dbp_s-o_unweighted_noLit/directed_indegree"
 outputFile = "dbp/roundtrip/dbp_s-o_unweighted_noLit/directed_indegree"
 
-if (len(sys.argv) == 1):
-	print "arg1: orig graph (e.g." + origGraph + "), arg2: file with rankings (e.g. "+rankingsFile + "), arg3: outputfile (e.g."+outputFile + ")"
-if len(sys.argv) > 1:
-    origGraph = sys.argv[1]
-if len(sys.argv) > 2:
-	rankingsFile = sys.argv[2]
-if len(sys.argv) > 3:
-    outputFile = sys.argv[3]
-    
+if (len(sys.argv) != 2):
+	print "takes as only argument the analysis file to rewrite"
+
+rankingsFile = sys.argv[1]
+
+dataset=rankingsFile.split("/")[0]
+
+origGraph = "%s/%s.nt" % (dataset,dataset)
+outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile))
     
 	
 pigScript = """
