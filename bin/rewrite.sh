@@ -12,7 +12,7 @@ function hadoopLs {
 
 
 
-rewriteMethods=(s_o_noLit.py s_o_litAsNode)
+rewriteMethods=(s_o_noLit.py s_o_litAsNode.py)
 if [ -z "$1" ];then
 	echo "at least 1 argument required (input). (second arg disables catting locally)"
 	exit;
