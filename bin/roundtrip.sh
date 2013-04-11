@@ -24,9 +24,8 @@ cmd="find $rDir -maxdepth 1 -type d -regex '^$rDir/$dataset.*'"
 rewriteDirs=`eval $cmd`
 while read -r rewriteDir; do
         echo "adding analysis $rewriteDir";
-        analysisFiles=`find $rewriteDir/output`
+        analysisFiles=`find $rewriteDir/output/*`
         while read -r analysisFile; do
-                roundtripForAnalysis $analysisFile; 
+                roundtripForAnalysisFile.sh $analysisFile; 
         done <<< "$analysisFiles"
-        echo $analysisFiles
 done <<< "$rewriteDirs"
