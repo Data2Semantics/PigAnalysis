@@ -18,11 +18,8 @@ basename=`basename $dirPath`
 graphname="http://$basename"
 
 echo "clearing graph";
-clearVirtuosoGraph $graphname;
+clearVirtuosoGraph.sh $graphname;
 
 
-
-
-
-
-
+removeDirFromLdList.sh $dirPath;
+addDirToVirtuoso.sh $dirPath;
