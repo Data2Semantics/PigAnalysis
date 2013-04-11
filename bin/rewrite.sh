@@ -38,7 +38,6 @@ if [ -z "$disableCat" ]; then
         fi
         targetFile="$targetDir/input"
         echo "Catting for rewrite method $basename";
-        echo "hadoop fs -cat $dir/part* > $targetFile";
         hadoop fs -cat $dir/part* > $targetFile;
 	done
 fi

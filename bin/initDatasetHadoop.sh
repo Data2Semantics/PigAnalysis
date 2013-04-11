@@ -8,3 +8,4 @@ hadoop fs -mkdir $1/rewrite;
 hadoop fs -mkdir $1/analysis;
 hadoop fs -mkdir $1/roundtrip;
 hadoop fs -mkdir $1/stats;
+echo "done";
