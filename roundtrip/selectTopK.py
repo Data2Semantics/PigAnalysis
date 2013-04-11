@@ -15,7 +15,7 @@ if len(sys.argv) > 2:
         exactK = int(sys.argv[2][:-1])
     else:
         percentage = sys.argv[2]
-outputFile = inputFile + "_" + sys.argv[2] + "n.nt"
+outputFile = inputFile + "_" + sys.argv[2] + ".nt"
     
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
