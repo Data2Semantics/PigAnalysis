@@ -14,6 +14,6 @@ fi
 for subdir in "${subdirs[@]}"; do
 	if [ ! -d "$rAnalysisDir/$subdir" ]; then
 		echo "creating subdir $subdir"
-		mkdir $rAnalysisDir/$rAnalysisDir;
+		mkdir $rAnalysisDir/$subdir;
 	fi
 done
