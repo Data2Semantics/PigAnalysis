@@ -8,6 +8,7 @@ percentage = "0.5";
 exactK = 0
 if (len(sys.argv) <= 3):
     print "arg1: input file (e.g." + inputFile + "), arg2: outputfile, arg3: top-k percentage (e.g. 50)"
+    sys.exit(1)
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
 if len(sys.argv) > 2:

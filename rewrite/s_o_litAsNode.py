@@ -1,21 +1,19 @@
 #!/usr/bin/python
 from org.apache.pig.scripting import Pig
 import sys
-
+from os.path import dirname, basename, splitext
 
 inputFile = "dbp/dbp.nt"
-outputFile = "dbp/rewrite/s-o_unweighted_litAsNode"
+
+if len(sys.argv) <= 1:
+    print "at least 1 arg required (input .nt file)"
+    sys.exit(1)
 
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
-if len(sys.argv) > 2:
-    outputFile = sys.argv[2]
 
+outputFile = "%s/rewrite/%s_s-o-litAsNode_unweighted" % (dirname(inputFile), splitext(basename(inputFile))[0])
 
-useLongHash = False
-if useLongHash:
-    outputFile += "Hashed"
-    
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
 DEFINE UnorderedPairs datafu.pig.bags.UnorderedPairs();
@@ -28,15 +26,7 @@ pigScript += """rdfGraph = LOAD '$inputFile' USING NtLoader() AS (sub:chararray,
 rdfDistinct = DISTINCT rdfGraph;---to reduce size. there might be some redundant triples
 """
 
-if useLongHash:
-    pigScript += """rewrittenGraph = FOREACH rdfDistinct GENERATE $longHash(sub), $longHash(obj), 1;
-"""
-else:
-    pigScript += """rewrittenGraph = FOREACH rdfDistinct GENERATE sub, obj, 1;
-"""
-
-
-pigScript += """
+pigScript += """rewrittenGraph = FOREACH rdfDistinct GENERATE sub, obj, 1;
 rmf $outputFile
 STORE rewrittenGraph INTO '$outputFile' USING PigStorage();
 """
