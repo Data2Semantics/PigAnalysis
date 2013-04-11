@@ -30,8 +30,9 @@ if [ -z "$disableCat" ]; then
 	hadoopLs "$dataset/rewrite";
 	for dir in "${hadoopLs[@]}"; do
 		basename=`basename "$dir"`;
+		targetFilename="~/rProject/$basename"
 		echo "Catting for files $basename";
-		hadoop fs -cat $dir/part* ~/rProject/$basename
+		hadoop fs -cat $dir/part* > $targetFilename;
 	done
 fi
 
