@@ -4,7 +4,6 @@ if [ -z "$1" ];then
         exit;
 fi
 
-scriptsFile="$HOME/rProject/scripts/getNodeStats.R"
 dataset=$1
 rDir="${HOME}/rProject"
 tripleWeightsDir="$HOME/stats/tripleWeights"
@@ -15,10 +14,5 @@ cmd="find $tripleWeightsDir/$dataset* -maxdepth 1 -type f"
 tripleWeightFiles=`eval $cmd`
 outputRunScript="$HOME/.rRunScript.R"
 while read -r tripleWeightFile; do
-	basename=`basename $tripleWeightFile`
-	targetFile="$plotsDir/$basename.pdf"
-    echo "filename <- \"$tripleWeightFile\"" > $outputRunScript;
-    echo "outputPdf <- \"$targetFile\"" >> $outputRunScript;
-    cat $scriptsFile >> $outputRunScript;
-    R -f $outputRunScript;
+	getTripleStatsForFile.sh $tripleWeightFile;
 done <<< "$tripleWeightFiles"
