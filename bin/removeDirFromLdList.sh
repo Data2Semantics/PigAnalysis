@@ -7,7 +7,7 @@ source /home/OpenPHACTS-Virtuoso/virtuoso-environment.sh;
 isqlFile="${HOME}/.isqlCmdFile.sql"
 dir=$(readlink -f $1)
 
-
+echo "Removing $dir from load list"
 echo "DELETE FROM load_list WHERE ll_file LIKE '$dir*';" > $isqlFile;
 echo "EXIT;" >> $isqlFile;
 echo "" >> $isqlFile;

@@ -20,7 +20,9 @@ graphname="http://$basename"
 echo "clearing graph";
 clearVirtuosoGraph $graphname;
 
-echo "updating ld_list"
+
+
+
 
 
 
