@@ -5,7 +5,7 @@ if [ -z "$1" ];then
 	exit;
 fi
 
-topKVariants=(0.5 0.2 100n)
+topKVariants=(0.5 0.2 100n 0.5w)#last one is strange: it's actually: half the graph, and only retrieve weights...
 pigRoundtripDir="$HOME/pigAnalysis/roundtrip"
 analysisFile=$1
 analysisBasename=`basename $analysisFile`;
@@ -24,6 +24,7 @@ targetFilename+=$analysisBasename
 
 localSubgraphDir="$HOME/load/subgraphs/"
 statsDir="$HOME/stats/100n/triples/"
+tripleWeightsDir="$HOME/stats/tripleWeights"
 echo "Storing file in hadoop fs"
 hadoopAnalysisFile="$hadoopAnalysisDir/$targetFilename"
 checkForDir=`hadoop fs -ls $hadoopAnalysisFile 2>&1 >/dev/null`;
@@ -54,6 +55,8 @@ for topK in "${topKVariants[@]}"; do
 	
 	if [[ $topK =~ n$ ]];then
 		hadoop fs -cat $hadoopRoundtripDir/$topKFile/part* > $statsDir/$topKFile;
+	elif [[ $topK =~ w$ ]];then
+		hadoop fs -cat $hadoopRoundtripDir/$topKFile/part* > $tripleWeightsDir/$topKFile;
 	else
 		localTargetDir="$localSubgraphDir/$topKFile";
 		localTargetFile="$localTargetDir/$topKFile";
