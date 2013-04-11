@@ -15,14 +15,18 @@ if [ -z "$1" ];then
 	echo "at least 1 argument required (dataset)"
 	exit;
 fi
+
+
 dataset=$1
 rDir="${HOME}/rProject"
 
 cmd="find $rDir -maxdepth 1 -type d -regex '^$rDir/$dataset.*'"
-dirs=`eval $cmd`
-while read -r line; do
-        echo "$line";
-done <<< "$dirs"
+rewriteDirs=`eval $cmd`
+while read -r $rewriteMethod; do
+        echo "doing roundtripping for $rewriteMethod";
+		analysisFiles=`find $rDir/output`
+		echo $analysisFiles
+done <<< "$rewriteDirs"
 
 
 
