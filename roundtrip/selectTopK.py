@@ -7,18 +7,15 @@ outputFile = ""
 percentage = "0.5";
 exactK = 0
 if (len(sys.argv) == 1):
-    print "arg1: input file (e.g." + inputFile + "), arg2: top-k percentage (e.g. 50)"
+    print "arg1: input file (e.g." + inputFile + "), arg2: top-k percentage (e.g. 0.5, or 100n (for a fixed number))"
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
 if len(sys.argv) > 2:
     if (sys.argv[2][-1:] == "n"):
         exactK = int(sys.argv[2][:-1])
     else:
-        percentage = str((float(sys.argv[2] + ".0") / 100.0))
-if exactK > 0:
-    outputFile = inputFile + "_" + str(exactK) + "n.nt"
-else:
-    outputFile = inputFile + "_" + percentage + ".nt"  
+        percentage = sys.argv[2]
+outputFile = inputFile + "_" + sys.argv[2] + "n.nt"
     
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
