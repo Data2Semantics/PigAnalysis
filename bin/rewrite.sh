@@ -32,9 +32,8 @@ if [ -z "$disableCat" ]; then
 		basename=`basename "$dir"`;
         targetDir="${HOME}/rProject/$basename"
         if [ ! -d "$targetDir" ]; then
-                echo "dir $targetDir does not exist. creating one"
-                echo "mkdir $targetDir"
-                mkdir $targetDir;
+                echo "dir $targetDir does not exist. initializing"
+                initRDir.sh $targetDir;
         fi
         targetFile="$targetDir/input"
         echo "Catting for rewrite method $basename";

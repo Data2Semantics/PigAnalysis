@@ -1,3 +1,4 @@
+#!/bin/bash
 if [ -z "$1" ];then
 	echo "at least 1 argument required (dataset)"
 	exit
