@@ -18,14 +18,13 @@ while read -r rewriteDir; do
         analysisFiles=`find $rewriteDir/output/*`
         while read -r analysisFile; do
 			echo "$rewriteMethod"
-        		targetFile="$rewriteMethod"
-        		targetFile+="_"
-        		targetFile+=`basename $analysisFile`
-		        echo "inputFilename <- \"$analysisFile\"" > $outputRunScript;
-		        echo "outputTop100 <- \"$top100Dir/$targetFile\"" >> $outputRunScript;
-		        echo "outputPdf <- \"$plotsDir/$targetFile.pdf\"" >> $outputRunScript;
-		        cat $scriptsFile >> $outputRunScript;
-		        R -f $outputRunScript;
-			exit;
+			targetFile="$rewriteMethod"
+			targetFile+="_"
+			targetFile+=`basename $analysisFile`
+	        echo "inputFilename <- \"$analysisFile\"" > $outputRunScript;
+	        echo "outputTop100 <- \"$top100Dir/$targetFile\"" >> $outputRunScript;
+	        echo "outputPdf <- \"$plotsDir/$targetFile.pdf\"" >> $outputRunScript;
+	        cat $scriptsFile >> $outputRunScript;
+	        R -f $outputRunScript;
         done <<< "$analysisFiles"
 done <<< "$rewriteDirs"

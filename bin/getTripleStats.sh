@@ -9,27 +9,18 @@ dataset=$1
 rDir="${HOME}/rProject"
 tripleWeightsDir="$HOME/stats/tripleWeights"
 plotsDir="$HOME/stats/plots/tripleWeightDist"
-
+scriptsFile="$HOME/rProject/scripts/getTripleStats.R"
 
 cmd="find $tripleWeightsDir/$dataset* -maxdepth 1 -type f"
 tripleWeightFiles=`eval $cmd`
 echo $tripleWeightFiles
-exit;
 outputRunScript="$HOME/.rRunScript.R"
-while read -r rewriteDir; do
-	rewriteMethod=`basename $rewriteDir`
-        echo "getting stats for rewrite method $rewriteDir";
-        analysisFiles=`find $rewriteDir/output/*`
-        while read -r analysisFile; do
-			echo "$rewriteMethod"
-        		targetFile="$rewriteMethod"
-        		targetFile+="_"
-        		targetFile+=`basename $analysisFile`
-		        echo "inputFilename <- \"$analysisFile\"" > $outputRunScript;
-		        echo "outputTop100 <- \"$top100Dir/$targetFile\"" >> $outputRunScript;
-		        echo "outputPdf <- \"$plotsDir/$targetFile.pdf\"" >> $outputRunScript;
-		        cat $scriptsFile >> $outputRunScript;
-		        R -f $outputRunScript;
-			exit;
-        done <<< "$analysisFiles"
-done <<< "$rewriteDirs"
+while read -r tripleWeightFile; do
+	basename=`basename $rewriteDir`
+	targetFile="$plotsDir/$basename.pdf"
+    echo "filename <- \"$tripleWeightFile\"" > $outputRunScript;
+    echo "outputPdf <- \"$targetFile\"" >> $outputRunScript;
+    cat $scriptsFile >> $outputRunScript;
+    #R -f $outputRunScript;
+    exit;
+done <<< "$tripleWeightFiles"
