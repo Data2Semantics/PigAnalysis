@@ -12,7 +12,7 @@ scriptsFile="$rDir/scripts/runAllAlgs.R"
 outputRunScript="${HOME}/.rRunScript.R"
 
 
-cmd="find $rDir -maxdepth 1 -type d -regex '^$rDir/df.*'"
+cmd="find $rDir -maxdepth 1 -type d -regex '^$rDir/$dataset.*'"
 dirs=`eval $cmd`
 while read -r line; do
         echo "Running analysis for $line";
