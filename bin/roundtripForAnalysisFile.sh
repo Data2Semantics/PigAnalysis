@@ -62,8 +62,9 @@ for topK in "${topKVariants[@]}"; do
 		fi
 
 		hadoop fs -cat $hadoopRoundtripDir/$topKFile/part* > $localTargetFile;
+		putDirInVirtuoso.sh $localTargetDir;
 	fi
 done
-
+checkpoint.sh;
 
 

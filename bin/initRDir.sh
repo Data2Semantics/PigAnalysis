@@ -4,7 +4,7 @@ if [ -z "$1" ];then
 	exit
 fi
 rAnalysisDir="$1"
-subdirs=(output plots top100)
+subdirs=(output)
 if [ ! -d "$rAnalysisDir" ]; then
         echo "creating main directory"
         mkdir $rAnalysisDir;
