@@ -13,14 +13,12 @@ scriptsFile="$HOME/rProject/scripts/getTripleStats.R"
 
 cmd="find $tripleWeightsDir/$dataset* -maxdepth 1 -type f"
 tripleWeightFiles=`eval $cmd`
-echo $tripleWeightFiles
 outputRunScript="$HOME/.rRunScript.R"
 while read -r tripleWeightFile; do
-	basename=`basename $rewriteDir`
+	basename=`basename $tripleWeightFile`
 	targetFile="$plotsDir/$basename.pdf"
     echo "filename <- \"$tripleWeightFile\"" > $outputRunScript;
     echo "outputPdf <- \"$targetFile\"" >> $outputRunScript;
     cat $scriptsFile >> $outputRunScript;
-    #R -f $outputRunScript;
-    exit;
+    R -f $outputRunScript;
 done <<< "$tripleWeightFiles"
