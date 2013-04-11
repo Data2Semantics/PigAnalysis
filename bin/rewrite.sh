@@ -22,7 +22,7 @@ disableCat=$2
 
 #rewrite stuff
 for rewriteMethod in "${rewriteMethods[@]}"; do
-  pig pigAnalysis/rewrite/${rewriteMethod} $dataset.nt;
+  pig pigAnalysis/rewrite/${rewriteMethod} $dataset/$dataset.nt;
 done
 
 #get all rewritten stuff locally
