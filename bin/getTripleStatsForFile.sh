@@ -8,6 +8,7 @@ tripleWeightsFile=$1
 rDir="${HOME}/rProject"
 plotsDir="$HOME/stats/plots/tripleWeightDist"
 scriptsFile="$HOME/rProject/scripts/getTripleStats.R"
+outputRunScript="$HOME/.rRunScript.R"
 
 basename=`basename $tripleWeightsFile`
 targetFile="$plotsDir/$basename.pdf"

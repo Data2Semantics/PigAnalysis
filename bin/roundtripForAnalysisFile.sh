@@ -57,6 +57,7 @@ for topK in "${topKVariants[@]}"; do
 		hadoop fs -cat $hadoopRoundtripDir/$topKFile/part* > $statsDir/$topKFile;
 	elif [[ $topK =~ w$ ]];then
 		hadoop fs -cat $hadoopRoundtripDir/$topKFile/part* > $tripleWeightsDir/$topKFile;
+		echo "just catted a file with just the triple weights. Now plot them"
 		getTripleStatsForFile.sh $tripleWeightsDir/$topKFile;
 	else
 		localTargetDir="$localSubgraphDir/$topKFile";
