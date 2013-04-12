@@ -17,14 +17,16 @@ while read -r rewriteDir; do
         echo "getting stats for rewrite method $rewriteDir";
         analysisFiles=`find $rewriteDir/output/*`
         while read -r analysisFile; do
-			echo "$rewriteMethod"
+			echo "getting node statistics for $rewriteMethod (as daemon)"
 			targetFile="$rewriteMethod"
 			targetFile+="_"
 			targetFile+=`basename $analysisFile`
+			runScript="$outputRunScript"
+			runScript+=`date +%s%N`
 	        echo "inputFilename <- \"$analysisFile\"" > $outputRunScript;
 	        echo "outputTop100 <- \"$top100Dir/$targetFile\"" >> $outputRunScript;
 	        echo "outputPdf <- \"$plotsDir/$targetFile.pdf\"" >> $outputRunScript;
 	        cat $scriptsFile >> $outputRunScript;
-	        R -f $outputRunScript;
+	        R -f $outputRunScript;&
         done <<< "$analysisFiles"
 done <<< "$rewriteDirs"
