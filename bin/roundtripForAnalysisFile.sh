@@ -43,33 +43,8 @@ if [ ! -f $pigScriptFile ]; then
 fi
 pig $pigScriptFile $hadoopAnalysisFile;
 
-hadoopRoundtripFile="$hadoopRoundtripDir/$targetFilename"
-for topK in "${topKVariants[@]}"; do
-	echo "selecting top-k $topK"
-	pig $pigRoundtripDir/selectTopK.py $hadoopRoundtripFile $topK;
+selectTopKForAnalysisFile.sh $analysisFile;
 
-	echo "catting results locally"
-	topKFile="$targetFilename"
-	topKFile+="_"
-	topKFile+="$topK.nt"
-	
-	if [[ $topK =~ n$ ]];then
-		hadoop fs -cat $hadoopRoundtripDir/$topKFile/part* > $statsDir/$topKFile;
-	elif [[ $topK =~ w$ ]];then
-		hadoop fs -cat $hadoopRoundtripDir/$topKFile/part* > $tripleWeightsDir/$topKFile;
-		echo "just catted a file with just the triple weights. Now plot them"
-		getTripleStatsForFile.sh $tripleWeightsDir/$topKFile;
-	else
-		localTargetDir="$localSubgraphDir/$topKFile";
-		localTargetFile="$localTargetDir/$topKFile";
-		if [ ! -d $localTargetDir ];then
-			mkdir $localTargetDir;
-		fi
-
-		hadoop fs -cat $hadoopRoundtripDir/$topKFile/part* > $localTargetFile;
-		putDirInVirtuoso.sh $localTargetDir;
-	fi
-done
 checkpoint.sh;
 
 
