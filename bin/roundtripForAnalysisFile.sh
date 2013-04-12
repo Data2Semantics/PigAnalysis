@@ -4,8 +4,8 @@ if [ -z "$1" ];then
 	echo "at least 1 argument required (the analysis file)"
 	exit;
 fi
-
-topKVariants=(0.5 0.2 100n 0.5w)#last one is strange: it's actually: half the graph, and only retrieve weights...
+#last one is strange: it's actually: half the graph, and only retrieve weights...
+topKVariants=(0.5 0.2 100n "0.5w")
 pigRoundtripDir="$HOME/pigAnalysis/roundtrip"
 analysisFile=$1
 analysisBasename=`basename $analysisFile`;
