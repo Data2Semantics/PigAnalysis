@@ -23,10 +23,10 @@ while read -r rewriteDir; do
 			targetFile+=`basename $analysisFile`
 			runScript="$outputRunScript"
 			runScript+=`date +%s%N`
-	        echo "inputFilename <- \"$analysisFile\"" > $outputRunScript;
-	        echo "outputTop100 <- \"$top100Dir/$targetFile\"" >> $outputRunScript;
-	        echo "outputPdf <- \"$plotsDir/$targetFile.pdf\"" >> $outputRunScript;
-	        cat $scriptsFile >> $outputRunScript;
-	        R -f $outputRunScript;&
+	        echo "inputFilename <- \"$analysisFile\"" > $runScript;
+	        echo "outputTop100 <- \"$top100Dir/$targetFile\"" >> $runScript;
+	        echo "outputPdf <- \"$plotsDir/$targetFile.pdf\"" >> $runScript;
+	        cat $scriptsFile >> $runScript;
+	        R -f $runScript &
         done <<< "$analysisFiles"
 done <<< "$rewriteDirs"
