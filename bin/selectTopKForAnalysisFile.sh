@@ -5,8 +5,9 @@ if [ -z "$1" ];then
 	exit;
 fi
 #last one is strange: it's actually: half the graph, and only retrieve weights...
-topKVariants=(0.5 0.2 100n "0.5w")
+topKVariants=("0.5w")
 analysisFile=$1
+pigRoundtripDir="$HOME/pigAnalysis/roundtrip"
 analysisBasename=`basename $analysisFile`;
 rewriteDir1=`dirname $analysisFile`;
 rewriteDir=`dirname $rewriteDir1`;#quick and ugly
