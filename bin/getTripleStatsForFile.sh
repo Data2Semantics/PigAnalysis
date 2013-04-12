@@ -16,3 +16,6 @@ echo "filename <- \"$tripleWeightsFile\"" > $outputRunScript;
 echo "outputPdf <- \"$targetFile\"" >> $outputRunScript;
 cat $scriptsFile >> $outputRunScript;
 R -f $outputRunScript &
+
+
+

@@ -9,7 +9,7 @@ dataset=$1
 rDir="${HOME}/rProject"
 top100Dir="$HOME/stats/100n/nodes"
 plotsDir="$HOME//stats/plots/nodeWeightDist"
-cmd="find $rDir -maxdepth 1 -type d -regex '^$rDir/$dataset.*'"
+cmd="find $rDir -maxdepth 1 -type d -regex '^$rDir/$dataset_.*'"
 rewriteDirs=`eval $cmd`
 outputRunScript="$HOME/.rRunScript.R"
 while read -r rewriteDir; do

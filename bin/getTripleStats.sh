@@ -10,7 +10,7 @@ tripleWeightsDir="$HOME/stats/tripleWeights"
 plotsDir="$HOME/stats/plots/tripleWeightDist"
 scriptsFile="$HOME/rProject/scripts/getTripleStats.R"
 
-cmd="find $tripleWeightsDir/$dataset* -maxdepth 1 -type f"
+cmd="find $tripleWeightsDir/$dataset_* -maxdepth 1 -type f"
 tripleWeightFiles=`eval $cmd`
 outputRunScript="$HOME/.rRunScript.R"
 while read -r tripleWeightFile; do
