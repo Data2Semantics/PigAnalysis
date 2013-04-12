@@ -15,7 +15,7 @@ if len(sys.argv) > 2:
     if (sys.argv[2][-1:] == "n"):
         exactK = int(sys.argv[2][:-1])
     elif sys.argv[2][-1:] == "w":
-        percentage = int(sys.argv[2][:-1])
+        percentage = sys.argv[2][:-1]
         onlyWeights = True
     else:
         percentage = sys.argv[2]
