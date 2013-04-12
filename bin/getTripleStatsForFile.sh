@@ -9,7 +9,7 @@ rDir="${HOME}/rProject"
 plotsDir="$HOME/stats/plots/tripleWeightDist"
 scriptsFile="$HOME/rProject/scripts/getTripleStats.R"
 outputRunScript="$HOME/.rRunScript.R"
-
+outputRunScript+=`date +%s%N`
 basename=`basename $tripleWeightsFile`
 targetFile="$plotsDir/$basename.pdf"
 echo "filename <- \"$tripleWeightsFile\"" > $outputRunScript;
