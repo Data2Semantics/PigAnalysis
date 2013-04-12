@@ -15,4 +15,4 @@ targetFile="$plotsDir/$basename.pdf"
 echo "filename <- \"$tripleWeightsFile\"" > $outputRunScript;
 echo "outputPdf <- \"$targetFile\"" >> $outputRunScript;
 cat $scriptsFile >> $outputRunScript;
-R -f $outputRunScript;
+R -f $outputRunScript &

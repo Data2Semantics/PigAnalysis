@@ -29,3 +29,5 @@ while read -r rewriteDir; do
                 roundtripForAnalysisFile.sh $analysisFile; 
         done <<< "$analysisFiles"
 done <<< "$rewriteDirs"
+
+getTripleStats.sh $dataset;
