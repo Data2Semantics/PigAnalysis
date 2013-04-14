@@ -5,11 +5,14 @@ if [ -z "$1" ];then
 fi
 source /home/OpenPHACTS-Virtuoso/virtuoso-environment.sh;
 isqlFile="${HOME}/.isqlCmdFile.sql"
-dir=$(readlink -f $1)
+for dir in "$@"; do
 
-echo "Removing $dir from load list"
-echo "DELETE FROM load_list WHERE ll_file LIKE '$dir*';" > $isqlFile;
-echo "EXIT;" >> $isqlFile;
-echo "" >> $isqlFile;
-cat $isqlFile | isql;
+	absDir=$(readlink -f $dir)
+
+	echo "Removing $dir from load list"
+	echo "DELETE FROM load_list WHERE ll_file LIKE '$absDir*';" > $isqlFile;
+	echo "EXIT;" >> $isqlFile;
+	echo "" >> $isqlFile;
+	cat $isqlFile | isql;
+done
 

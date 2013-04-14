@@ -8,15 +8,16 @@ fi
 source /home/OpenPHACTS-Virtuoso/virtuoso-environment.sh;
 isqlFile="${HOME}/.isqlCmdFile.sql"
 
+for dir in "$@"; do
+	absDir=$(readlink -f $dir)
 
-dir=$(readlink -f $1)
-
-echo "Removing $dir from load list"
-delDirFromLdList.sh $dir
+	echo "Removing $dir from load list"
+	delDirFromLdList.sh $absDir
 
 
-basename=`basename $dir`
-graphname="http://$basename"
+	basename=`basename $absDir`
+	graphname="http://$basename"
 
-echo "clearing graph";
-clearVirtuosoGraph.sh $graphname;
+	echo "clearing graph";
+	clearVirtuosoGraph.sh $graphname;
+done
