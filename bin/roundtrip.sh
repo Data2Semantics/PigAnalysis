@@ -12,7 +12,7 @@ function hadoopLs {
 
 
 if [ -z "$1" ];then
-        echo "at least 1 argument required (dataset)"
+        echo "at least 1 argument required (directory path for roundtrips)"
         exit;
 fi
 

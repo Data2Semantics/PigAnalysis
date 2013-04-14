@@ -1,23 +1,26 @@
 #!/bin/bash
 
 if [ -z "$1" ];then
-        echo "at least 1 argument required (dataset)"
+        echo "at least 1 argument required (file pattern for analysis dirs)"
         exit;
 fi
-
-
-dataset=$1
 rDir="${HOME}/rProject"
 scriptsFile="$rDir/scripts/runAllAlgs.R"
 outputRunScript="${HOME}/.rRunScript.R"
 
-
-cmd="find $rDir -maxdepth 1 -type d -regex '^$rDir/$dataset_.*'"
-dirs=`eval $cmd`
-while read -r line; do
-        echo "Running analysis for $line";
-        echo "setwd(\"$line\")" > $outputRunScript;
-        cat $scriptsFile >> $outputRunScript;
-        R -f $outputRunScript;
-done <<< "$dirs"
-
+for dir in "$@"; do
+	if [ -d "$dir" ]; then
+	    echo "Running analysis for $dir";
+	    echo "setwd(\"$dir\")" > $outputRunScript;
+	    cat $scriptsFile >> $outputRunScript;
+	    R -f $outputRunScript;
+	else
+		if [ -f "$dir" ]; then
+			echo "Pattern matches file $dir . This cant be right. exiting"
+			exit;
+		else 
+			echo "$dir does not exist"
+			exit
+		fi
+	fi
+done
