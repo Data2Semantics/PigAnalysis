@@ -49,8 +49,8 @@ else:
     pigScript += """
 tripleCount = foreach rankedTriplesGrouped generate COUNT(triplesDistinct) as count;
 rmf $tripleSizeFile
-STORE tripleCount INTO '$tripleSizeFile' USING PigStorage();
-limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
+---STORE tripleCount INTO '$tripleSizeFile' USING PigStorage();
+---limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
 
 
 limitTriplesGrouped = group limitTriples all;
