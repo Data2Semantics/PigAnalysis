@@ -27,17 +27,11 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 pigScript += """
 largeGraph = LOAD '$inputFile' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 rdfDistinct = DISTINCT largeGraph;---to reduce size. there might be some redundant triples
-graphWithRandom = FOREACH rdfDistinct GENERATE sub, pred, obj, RANDOM() AS rand;
-graphSortedRandom = ORDER graphWithRandom BY rand;
-
-graphGrouped = group rdfDistinct all;
-tripleCount = foreach graphGrouped generate COUNT(rdfDistinct) as count;
 
 
-limitTriples = LIMIT graphSortedRandom (int)(tripleCount.count * $percentage);
+rdfGraph = SAMPLE rdfDistinct $percentage; 
+ntriples = FOREACH rdfGraph GENERATE sub, pred, obj, '.';
 
- 
-ntriples = FOREACH limitTriples GENERATE sub, pred, obj, '.';
 rmf $outputFile
 STORE ntriples INTO '$outputFile' USING PigStorage();
 """
