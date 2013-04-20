@@ -28,7 +28,6 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 pigScript += """
 graph = LOAD '$rewrittenGraph' USING PigStorage() AS (lhs:chararray, rhs:chararray);
 distinctGraph = DISTINCT graph;
-weightedResources = FOREACH GRAPH GENERATE rhs, 1 AS indegree;
 
 
 graphGrouped = GROUP distinctGraph BY rhs;
