@@ -22,8 +22,7 @@ if len(sys.argv) > 2:
 if len(sys.argv) > 3:
     outputFile = sys.argv[3]
 else:
-    outputFile = inputFile + "_" + sys.argv[2] + ".nt"
-tripleSizeFile = inputFile + "_size"
+    outputFile = inputFile + "_max" + sys.argv[2] + ".nt"
     
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
@@ -48,8 +47,6 @@ storeTriples = LIMIT orderedTriples """ + str(exactK) + """;"""
 else:
     pigScript += """
 tripleCount = foreach rankedTriplesGrouped generate COUNT(triplesDistinct) as count;
----rmf $tripleSizeFile
----STORE tripleCount INTO '$tripleSizeFile' USING PigStorage();
 limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
 
 
