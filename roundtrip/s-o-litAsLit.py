@@ -53,13 +53,14 @@ rankedTriples = FOREACH rankedObjTriples GENERATE
 		rankedSubTriples::triples::pred,
 		rankedSubTriples::triples::obj,
 		AVG({(rankedSubTriples::subRank is null? 0F: rankedSubTriples::subRank),(objRank is null? 0F: objRank)}) AS ranking;
-
+distinctTriples = DISTINCT rankedTriples;
 
 rmf $outputFile
-STORE rankedTriples INTO '$outputFile' USING PigStorage();
+STORE distinctTriples INTO '$outputFile' USING PigStorage();
 
 """
 
 
 P = Pig.compile(pigScript)
 stats = P.bind().runSingle()
+
