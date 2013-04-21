@@ -41,20 +41,13 @@ explodedResources = FOREACH rankedResources {
 }
 cleanedResources = DISTINCT explodedResources;
 
-subGroup = COGROUP distinctTriples by sub, cleanedResources by resource;
---- generates: subGroup: {group: chararray,distinctTriples: {(sub: chararray,pred: chararray,obj: chararray)},cleanedResources: {(resource: chararray,ranking: double)}}
-rankedSubTriples = FOREACH subGroup GENERATE FLATTEN(distinctTriples), FLATTEN(cleanedResources.ranking) AS subRank;
----generates: rankedSubTriples: {distinctTriples::sub: chararray,distinctTriples::pred: chararray,distinctTriples::obj: chararray,subRank: double}
+subJoined = JOIN distinctTriples by sub, cleanedResources by resource;
 
-objGroup = COGROUP rankedSubTriples by obj, cleanedResources by resource;
-rankedObjTriples = FOREACH objGroup GENERATE FLATTEN(rankedSubTriples), FLATTEN(cleanedResources.ranking) AS objRank;
+objJoined = JOIN subJoined by $2, cleanedResrouces by resource;
+---filteredSubJoin = FILTER joinedTriples BY $2 == $4;
 
----rankedObjTriples: {rankedSubTriples::triples::sub: chararray,rankedSubTriples::triples::pred: chararray,rankedSubTriples::triples::obj: chararray,rankedSubTriples::subRank: double,objRank: double}
-rankedTriples = FOREACH rankedObjTriples GENERATE 
-		rankedSubTriples::distinctTriples::sub, 
-		rankedSubTriples::distinctTriples::pred,
-		rankedSubTriples::distinctTriples::obj,
-		AVG({(rankedSubTriples::subRank is null? 0F: rankedSubTriples::subRank),(objRank is null? 0F: objRank)}) AS ranking;
+rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, AVG({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;
+
 distinctRankedTriples = DISTINCT rankedTriples;
 
 rmf $outputFile
