@@ -33,10 +33,11 @@ origGraphRhs = LOAD '$inputFile' USING NtLoader() AS (sub:chararray, pred:charar
 rdfGraphRhs = DISTINCT origGraphRhs;---to reduce size. there might be some redundant triples
 rdfSoGraphRhs = FOREACH rdfGraphRhs GENERATE sub, obj;
 
-joinedGraphs = JOIN rdfSoGraphLhs BY rdfSoGraphLhs.obj, rdfSoGraphRhs BY subj;
+joinedGraphs = JOIN rdfSoGraphLhs BY obj, rdfSoGraphRhs BY sub;
 
 outputGraph = FOREACH joinedGraphs GENERATE StringConcat($0, '@#@#', $1), StringConcat($2, '@#@#', $3);
-STORE outputGraph INTO '$outputFile' USING PigStorage();
+distinctOutputGraph = DISTINCT outputGraph;
+STORE distinctOutputGraph INTO '$outputFile' USING PigStorage();
 """
 #
 #pigScript += """
