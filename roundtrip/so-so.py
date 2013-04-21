@@ -31,14 +31,14 @@ rankedResources = LOAD '$rankingsFile' USING PigStorage() AS (concatResources:ch
 
 cleanedResources = FOREACH rankedResources {
 	explodedResources = STRSPLIT(concatResources, '@#@#', 2);
-	subject = explodedResources.$0;
-	object = explodedResources.$1;
 	
-	GENERATE subject AS subject, object AS object, ranking AS ranking;
+	GENERATE FLATTEN(explodedResources), ranking AS ranking;
 }
 
-joinedTriples = JOIN triples BY sub, cleanedResources BY subject;
-filteredTriples = FILTER joinedTriples BY triples::obj != cleanedResources::object;
+joinedTriples = JOIN distinctTriples BY sub, cleanedResources BY $0;
+
+---we've joined by subject. we want to make sure the objects match as well!
+filteredTriples = FILTER joinedTriples BY $2 == $4;
 
 outputGraph = FOREACH filteredTriples GENERATE $0, $1, $2, $5;
 distinctGraph = DISTINCT outputGraph;
