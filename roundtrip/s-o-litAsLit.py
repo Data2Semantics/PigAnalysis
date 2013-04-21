@@ -28,7 +28,7 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 
 pigScript += """
 triples = LOAD '$origGraph' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
-distinctTriples = DISTINCT rankedTriples;
+distinctTriples = DISTINCT triples;
 rankedResources = LOAD '$rankingsFile' USING PigStorage() AS (resource:chararray, ranking:double);
 explodedResources = FOREACH rankedResources {
 	newResource = (resource matches '.*@#@#.*' ? STRSPLIT(resource, '@#@#', 2).$1: resource);
