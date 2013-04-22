@@ -43,7 +43,7 @@ cleanedResources = DISTINCT explodedResources;
 
 subJoined = JOIN distinctTriples by sub, cleanedResources by resource;
 
-objJoined = JOIN subJoined by $2, cleanedResrouces by resource;
+objJoined = JOIN subJoined by $2, cleanedResources by resource;
 ---filteredSubJoin = FILTER joinedTriples BY $2 == $4;
 
 rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, AVG({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;
