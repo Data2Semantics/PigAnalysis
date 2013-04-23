@@ -8,7 +8,6 @@ if (len(sys.argv) < 3):
 	print "takes as argument the analysis file to rewrite, and how to aggregate ('min', 'max', or 'avg' (unused though, no need to aggregate)). optional arg: output file"
 
 rankingsFile = sys.argv[1]
-aggregateMethod = sys.argv[2]
 dataset=rankingsFile.split("/")[0]
 
 origGraph = "%s/%s.nt" % (dataset,dataset)
