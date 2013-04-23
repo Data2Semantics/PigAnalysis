@@ -16,7 +16,7 @@ dataset=roundtrippedGraph.split("/")[0]
 if len(sys.argv) > 3:
     outputFile = sys.argv[3];
 else:
-    outputFile = "%s/queryStats/%s_" % (dataset, basename(rewrittenGraph), basename(queryNtripleFile))
+    outputFile = "%s/queryStats/%s_%s" % (dataset, basename(rewrittenGraph), basename(queryNtripleFile))
 
 if (len(sys.argv) == 3):
     outputFile = sys.argv[2];
@@ -44,8 +44,6 @@ resultsToStore = FOREACH joinedQueryTriples GENERATE $0, $1, $2, $3;---triple, w
 
 rmf $outputFile
 STORE resultsToStore INTO '$outputFile' USING PigStorage();
-
-
 """
 
 
