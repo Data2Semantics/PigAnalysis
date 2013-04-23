@@ -7,16 +7,18 @@ origGraph = "dbp/dbp.nt"
 rankingsFile = "dbp/analysis/dbp_s-o_unweighted_noLit/directed_indegree"
 outputFile = "dbp/roundtrip/dbp_s-o_unweighted_noLit/directed_indegree"
 
-if (len(sys.argv) != 2):
-	print "takes as only argument the analysis file to rewrite"
+if (len(sys.argv) < 3):
+	print "takes as argument the analysis file to rewrite, and how to aggregate ('min', 'max', or 'avg'). optional arg: output file"
+
 
 rankingsFile = sys.argv[1]
-
+aggregateMethod = sys.argv[2]
 dataset=rankingsFile.split("/")[0]
 
 origGraph = "%s/%s.nt" % (dataset,dataset)
-outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile))
-
+outputFile = "%s/roundtrip/%s_%s" % (dataset, basename(rankingsFile), aggregateMethod)
+if len(sys.argv) > 3:
+	outputFile = sys.argv[3]
 	
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
@@ -45,9 +47,22 @@ subJoined = JOIN distinctTriples by sub, cleanedResources by resource;
 
 objJoined = JOIN subJoined by $2, cleanedResources by resource;
 ---filteredSubJoin = FILTER joinedTriples BY $2 == $4;
+"""
 
-rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, AVG({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;
+if aggregateMethod == "avg":
+	pigScript += """
+rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, AVG({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;"""
+elif aggregateMethod == "max":
+	pigScript += """
+rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, MAX({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;"""
+elif aggregateMethod == "min":
+	pigScript += """
+rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, MIN({($4 is null? 1F: $4),($6 is null? 1F: $6)}) AS ranking ;"""
+else: 
+	pigScript += """
+WRONGGGG. how to aggregate?!"""
 
+pigScript += """
 distinctRankedTriples = DISTINCT rankedTriples;
 
 rmf $outputFile

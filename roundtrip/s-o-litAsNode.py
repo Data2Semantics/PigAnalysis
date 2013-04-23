@@ -7,16 +7,17 @@ origGraph = "dbp/dbp.nt"
 rankingsFile = "dbp/analysis/dbp_s-o_unweighted_noLit/directed_indegree"
 outputFile = "dbp/roundtrip/dbp_s-o_unweighted_noLit/directed_indegree"
 
-if (len(sys.argv) != 2):
-	print "takes as only argument the analysis file to rewrite"
+if (len(sys.argv) < 3):
+	print "takes as argument the analysis file to rewrite, and how to aggregate ('min', 'max', or 'avg'). optional arg: output file"
 
 rankingsFile = sys.argv[1]
-
+aggregateMethod = sys.argv[2]
 dataset=rankingsFile.split("/")[0]
 
 origGraph = "%s/%s.nt" % (dataset,dataset)
-outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile))
-    
+outputFile = "%s/roundtrip/%s_%s" % (dataset, basename(rankingsFile), aggregateMethod)
+if len(sys.argv) > 3:
+	outputFile = sys.argv[3] 
 	
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
@@ -37,14 +38,34 @@ rankedSubTriples = FOREACH subGroup GENERATE FLATTEN(triples), FLATTEN(rankedRes
 
 objGroup = COGROUP rankedSubTriples by obj, rankedResources by resource;
 rankedObjTriples = FOREACH objGroup GENERATE FLATTEN(rankedSubTriples), FLATTEN(rankedResources.ranking) AS objRank;
+"""
 
----rankedObjTriples: {rankedSubTriples::triples::sub: chararray,rankedSubTriples::triples::pred: chararray,rankedSubTriples::triples::obj: chararray,rankedSubTriples::subRank: double,objRank: double}
+if aggregateMethod == "avg":
+	pigScript += """
 rankedTriples = FOREACH rankedObjTriples GENERATE 
 		rankedSubTriples::triples::sub, 
 		rankedSubTriples::triples::pred,
 		rankedSubTriples::triples::obj,
-		AVG({(rankedSubTriples::subRank is null? 0F: rankedSubTriples::subRank),(objRank is null? 0F: objRank)}) AS ranking;
+		AVG({(rankedSubTriples::subRank is null? 0F: rankedSubTriples::subRank),(objRank is null? 0F: objRank)}) AS ranking;"""
+elif aggregateMethod == "max":
+	pigScript += """
+rankedTriples = FOREACH rankedObjTriples GENERATE 
+		rankedSubTriples::triples::sub, 
+		rankedSubTriples::triples::pred,
+		rankedSubTriples::triples::obj,
+		MAX({(rankedSubTriples::subRank is null? 0F: rankedSubTriples::subRank),(objRank is null? 0F: objRank)}) AS ranking;"""
+elif aggregateMethod == "min":
+	pigScript += """
+rankedTriples = FOREACH rankedObjTriples GENERATE 
+		rankedSubTriples::triples::sub, 
+		rankedSubTriples::triples::pred,
+		rankedSubTriples::triples::obj,
+		MIN({(rankedSubTriples::subRank is null? 1F: rankedSubTriples::subRank),(objRank is null? 1F: objRank)}) AS ranking;"""
+else: 
+	pigScript += """
+WRONGGGG. how to aggregate?!"""
 
+"""
 
 rmf $outputFile
 STORE rankedTriples INTO '$outputFile' USING PigStorage();

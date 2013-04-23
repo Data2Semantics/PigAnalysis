@@ -4,17 +4,17 @@ import sys
 from os.path import dirname, basename, splitext
 
 
-if (len(sys.argv) != 2):
-	print "takes as only argument the analysis file to rewrite. optional argument: output file"
+if (len(sys.argv) < 3):
+	print "takes as argument the analysis file to rewrite, and how to aggregate ('min', 'max', or 'avg' (unused though, no need to aggregate)). optional arg: output file"
 
 rankingsFile = sys.argv[1]
-
+aggregateMethod = sys.argv[2]
 dataset=rankingsFile.split("/")[0]
 
 origGraph = "%s/%s.nt" % (dataset,dataset)
-outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile))
-if len(sys.argv) > 2:
-	outputFile = sys.argv[2]
+outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile), aggregateMethod)
+if len(sys.argv) > 3:
+	outputFile = sys.argv[3]
 	
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
@@ -35,10 +35,8 @@ cleanedResources = FOREACH rankedResources {
 	GENERATE FLATTEN(explodedResources), ranking AS ranking;
 }
 
-joinedTriples = JOIN distinctTriples BY sub, cleanedResources BY $0;
+joinedTriples = JOIN distinctTriples BY (sub, obj), cleanedResources BY ($0, $1);
 
----we've joined by subject. we want to make sure the objects match as well!
-filteredTriples = FILTER joinedTriples BY $2 == $4;
 
 outputGraph = FOREACH filteredTriples GENERATE $0, $1, $2, $5;
 distinctGraph = DISTINCT outputGraph;
