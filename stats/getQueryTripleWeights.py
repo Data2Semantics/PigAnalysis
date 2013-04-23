@@ -11,15 +11,15 @@ if len(sys.argv) < 3:
 
 roundtrippedGraph = sys.argv[1]
 queryNtripleFile = sys.argv[2]
+ntripleBasename = splitext(basename(queryNtripleFile))[0]
+ntripleOutputFilename = ntripleBasename.split("_")[-1]
+
 
 dataset=roundtrippedGraph.split("/")[0]
 if len(sys.argv) > 3:
     outputFile = sys.argv[3];
 else:
-    outputFile = "%s/queryStats/%s_%s" % (dataset, basename(rewrittenGraph), basename(queryNtripleFile))
-
-if (len(sys.argv) == 3):
-    outputFile = sys.argv[2];
+    outputFile = "%s/queryStats/%s_%s" % (dataset, basename(roundtrippedGraph), ntripleOutputFilename)
 
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
