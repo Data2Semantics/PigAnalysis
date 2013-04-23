@@ -11,7 +11,7 @@ rankingsFile = sys.argv[1]
 dataset=rankingsFile.split("/")[0]
 
 origGraph = "%s/%s.nt" % (dataset,dataset)
-outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile), aggregateMethod)
+outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile))
 if len(sys.argv) > 3:
 	outputFile = sys.argv[3]
 	
