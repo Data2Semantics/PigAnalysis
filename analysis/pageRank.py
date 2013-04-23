@@ -8,6 +8,23 @@ www.C.com    1    { (www.D.com) }
 www.D.com    1    { (www.B.com) }
 www.E.com    1    { (www.A.com) }
 www.F.com    1    { (www.B.com), (www.C.com) }"""
+
+
+rewrittenGraph = "ops/rewrite/df_s-o-litAsLit_unweighted"
+
+if (len(sys.argv) < 2):
+    print "takes as argument the rewritten graph to perform the analysis on. Optional argument is custom outputfile"
+
+rewrittenGraph = sys.argv[1]
+
+dataset=rewrittenGraph.split("/")[0]
+
+outputFile = "%s/analysis/%s_directed_pagerank" % (dataset, basename(rewrittenGraph))
+
+if (len(sys.argv) == 3):
+    outputFile = sys.argv[2];
+    
+    
 P = Pig.compile("""
 previous_pagerank = 
     LOAD '$docs_in'

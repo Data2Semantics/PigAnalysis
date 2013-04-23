@@ -16,7 +16,7 @@ dataset=rankingsFile.split("/")[0]
 
 origGraph = "%s/%s.nt" % (dataset,dataset)
 outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile))
-    
+
 	
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
