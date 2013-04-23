@@ -37,6 +37,7 @@ joinedGraphs = JOIN rdfSoGraphLhs BY obj, rdfSoGraphRhs BY sub;
 
 outputGraph = FOREACH joinedGraphs GENERATE StringConcat($0, '@#@#', $1), StringConcat($2, '@#@#', $3);
 distinctOutputGraph = DISTINCT outputGraph;
+rmf $outputFile
 STORE distinctOutputGraph INTO '$outputFile' USING PigStorage();
 """
 #
