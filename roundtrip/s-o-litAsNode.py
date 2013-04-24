@@ -65,7 +65,7 @@ else:
 	pigScript += """
 WRONGGGG. how to aggregate?!"""
 
-"""
+pigScript += """
 
 rmf $outputFile
 STORE rankedTriples INTO '$outputFile' USING PigStorage();
