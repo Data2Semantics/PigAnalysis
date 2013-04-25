@@ -31,10 +31,10 @@ rankedResources = LOAD '$rankingsFile' USING PigStorage() AS (concatResources:ch
 cleanedResources = FOREACH rankedResources {
 	explodedResources = STRSPLIT(concatResources, '@#@#', 2);
 	
-	GENERATE FLATTEN(explodedResources), ranking AS ranking;
+	GENERATE FLATTEN(explodedResources) AS (lhs:chararray, rhs:chararray), ranking AS ranking;
 }
 
-joinedTriples = JOIN distinctTriples BY (sub, obj) LEFT OUTER, cleanedResources BY ($0, $1);
+joinedTriples = JOIN distinctTriples BY (sub, obj) LEFT OUTER, cleanedResources BY (lhs, rhs);
 
 
 outputGraph = FOREACH joinedTriples GENERATE $0, $1, $2, $5;
