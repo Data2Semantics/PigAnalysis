@@ -33,30 +33,42 @@ triples = LOAD '$origGraph' USING NtLoader() AS (sub:chararray, pred:chararray, 
 distinctTriples = DISTINCT triples;
 rankedResources = LOAD '$rankingsFile' USING PigStorage() AS (resource:chararray, ranking:double);
 explodedResources = FOREACH rankedResources {
-	newResource = (resource matches '.*@#@#.*' ? STRSPLIT(resource, '@#@#', 2).$1: resource);
+	newResource = (resource matches '.*@#@#.*' ? STRSPLIT(resource, '@#@#', 3).$2: resource);
+	subResource = (resource matches '.*@#@#.*' ? STRSPLIT(resource, '@#@#', 3).$0: null);
 	
-	
-	GENERATE newResource AS resource, ranking AS ranking;
+	GENERATE subResource AS subResource, newResource AS resource, ranking AS ranking;
 }
 cleanedResources = DISTINCT explodedResources;
 
-subJoined = JOIN distinctTriples by sub, cleanedResources by resource;
+subJoined = JOIN distinctTriples by sub LEFT OUTER, cleanedResources by resource;
 
-objJoined = JOIN subJoined by $2, cleanedResources by resource;
+
+---first join by both subject and object, so we get the right literal
+objJoined = JOIN subJoined by ($0, $2) LEFT OUTER, cleanedResources by (subResource, resource);
+
+---then join by regular object
+explodedResourcesWithoutSub = FILTER explodedResources BY subResource is null;
+objJoinedWithRegObjects = JOIN objJoined by $2 LEFT OUTER, explodedResourcesWithoutSub by resource;
 
 ---filteredSubJoin = FILTER joinedTriples BY $2 == $4;
 
+
+cleanedBag = FOREACH objJoinedWithRegObjects {
+	subWeight = $5;
+	objWeight = ($8 is null? $11: $8);
+	GENERATE $0 as sub, $1 as pred, $2 as obj, subWeight AS subWeight, objWeight AS objWeight; 
+}
 """
 
 if aggregateMethod == "avg":
 	pigScript += """
-rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, AVG({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;"""
+rankedTriples = FOREACH cleanedBag GENERATE sub, pred, obj, AVG({(subWeight is null? 0F: subWeight),(objWeight is null? 0F: objWeight)}) AS ranking ;"""
 elif aggregateMethod == "max":
 	pigScript += """
-rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, MAX({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;"""
+rankedTriples = FOREACH objJoined GENERATE sub, pred, obj, MAX({(subWeight is null? 0F: subWeight),(objWeight is null? 0F: objWeight)}) AS ranking ;"""
 elif aggregateMethod == "min":
 	pigScript += """
-rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, MIN({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;"""
+rankedTriples = FOREACH objJoined GENERATE sub, pred, obj, MIN({(subWeight is null? 0F: subWeight),(objWeight is null? 0F: objWeight)}) AS ranking ;"""
 else: 
 	pigScript += """
 WRONGGGG. how to aggregate?!"""
