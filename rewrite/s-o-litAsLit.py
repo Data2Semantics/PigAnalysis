@@ -29,7 +29,7 @@ rdfDistinct = DISTINCT rdfGraph;---to reduce size. there might be some redundant
 
 pigScript += """
 rewrittenGraph = FOREACH rdfDistinct {
-    newObj = (SUBSTRING(obj, 0, 1) == '"' ? StringConcat(MD5((chararray)RANDOM()),'@#@#', obj): obj);
+    newObj = (SUBSTRING(obj, 0, 1) == '"' ? StringConcat(sub, '@#@#', MD5((chararray)RANDOM()),'@#@#', obj): obj);
     GENERATE sub, newObj, 1;
 }
 rmf $outputFile
