@@ -38,23 +38,23 @@ subGroup = JOIN distinctTriples by sub LEFT OUTER, rankedResources by resource;
 ----rankedSubTriples = FOREACH subGroup GENERATE FLATTEN(distinctTriples), FLATTEN(rankedResources.ranking) AS subRank;
 ---generates: rankedSubTriples: {triples::sub: chararray,triples::pred: chararray,triples::obj: chararray,subRank: double}
 
-objGroup = JOIN rankedSubTriples by obj LEFT OUTER, rankedResources by resource;
+objGroup = JOIN subGroup by obj LEFT OUTER, rankedResources by resource;
 ---rankedObjTriples = FOREACH objGroup GENERATE FLATTEN(rankedSubTriples), FLATTEN(rankedResources.ranking) AS objRank;
 """
 
 if aggregateMethod == "avg":
 	pigScript += """
-rankedTriples = FOREACH rankedObjTriples GENERATE 
+rankedTriples = FOREACH objGroup GENERATE 
 		$0,$1,$2,
 		AVG({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking;"""
 elif aggregateMethod == "max":
 	pigScript += """
-rankedTriples = FOREACH rankedObjTriples GENERATE 
+rankedTriples = FOREACH objGroup GENERATE 
 		$0,$1,$2,
 		MAX({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking;"""
 elif aggregateMethod == "min":
 	pigScript += """
-rankedTriples = FOREACH rankedObjTriples GENERATE 
+rankedTriples = FOREACH objGroup GENERATE 
 		$0,$1,$2,
 		MIN({($4 is null? 1F: $4),($6 is null? 1F: $6)}) AS ranking;"""
 else: 
