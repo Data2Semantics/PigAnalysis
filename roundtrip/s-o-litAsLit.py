@@ -65,7 +65,7 @@ pigScript += """
 
 
 rmf $outputFile
-STORE distinctRankedTriples INTO '$outputFile' USING PigStorage();
+STORE rankedTriples INTO '$outputFile' USING PigStorage();
 
 """
 
