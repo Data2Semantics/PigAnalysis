@@ -34,7 +34,7 @@ distinctTriples = DISTINCT triples;
 rankedResources = LOAD '$rankingsFile' USING PigStorage() AS (resource:chararray, ranking:double);
 explodedResources = FOREACH rankedResources {
 	newResource = (resource matches '.*@#@#.*' ? STRSPLIT(resource, '@#@#', 3).$2: resource);
-	subResource = (resource matches '.*@#@#.*' ? STRSPLIT(resource, '@#@#', 3).$0: null);
+	subResource = (resource matches '.*@#@#.*' ? STRSPLIT(resource, '@#@#', 3).$0: (chararray)null);
 	
 	GENERATE subResource AS subResource, newResource AS resource, ranking AS ranking;
 }
@@ -65,10 +65,10 @@ if aggregateMethod == "avg":
 rankedTriples = FOREACH cleanedBag GENERATE sub, pred, obj, AVG({(subWeight is null? 0F: subWeight),(objWeight is null? 0F: objWeight)}) AS ranking ;"""
 elif aggregateMethod == "max":
 	pigScript += """
-rankedTriples = FOREACH objJoined GENERATE sub, pred, obj, MAX({(subWeight is null? 0F: subWeight),(objWeight is null? 0F: objWeight)}) AS ranking ;"""
+rankedTriples = FOREACH cleanedBag GENERATE sub, pred, obj, MAX({(subWeight is null? 0F: subWeight),(objWeight is null? 0F: objWeight)}) AS ranking ;"""
 elif aggregateMethod == "min":
 	pigScript += """
-rankedTriples = FOREACH objJoined GENERATE sub, pred, obj, MIN({(subWeight is null? 0F: subWeight),(objWeight is null? 0F: objWeight)}) AS ranking ;"""
+rankedTriples = FOREACH cleanedBag GENERATE sub, pred, obj, MIN({(subWeight is null? 0F: subWeight),(objWeight is null? 0F: objWeight)}) AS ranking ;"""
 else: 
 	pigScript += """
 WRONGGGG. how to aggregate?!"""
