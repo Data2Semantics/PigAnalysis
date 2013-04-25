@@ -34,7 +34,7 @@ cleanedResources = FOREACH rankedResources {
 	GENERATE FLATTEN(explodedResources), ranking AS ranking;
 }
 
-joinedTriples = JOIN distinctTriples BY (sub, obj), cleanedResources BY ($0, $1);
+joinedTriples = JOIN distinctTriples BY (sub, obj) LEFT OUTER, cleanedResources BY ($0, $1);
 
 
 outputGraph = FOREACH joinedTriples GENERATE $0, $1, $2, $5;
