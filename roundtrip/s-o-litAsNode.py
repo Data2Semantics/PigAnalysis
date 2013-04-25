@@ -33,36 +33,30 @@ distinctTriples = DISTINCT triples;
 
 rankedResources = LOAD '$rankingsFile' USING PigStorage() AS (resource:chararray, ranking:double);
 
-subGroup = COGROUP distinctTriples by sub LEFT OUTER, rankedResources by resource;
+subGroup = JOIN distinctTriples by sub LEFT OUTER, rankedResources by resource;
 --- generates: subGroup: {group: chararray,triples: {(sub: chararray,pred: chararray,obj: chararray)},rankedResources: {(resource: chararray,ranking: double)}}
-rankedSubTriples = FOREACH subGroup GENERATE FLATTEN(distinctTriples), FLATTEN(rankedResources.ranking) AS subRank;
+----rankedSubTriples = FOREACH subGroup GENERATE FLATTEN(distinctTriples), FLATTEN(rankedResources.ranking) AS subRank;
 ---generates: rankedSubTriples: {triples::sub: chararray,triples::pred: chararray,triples::obj: chararray,subRank: double}
 
-objGroup = COGROUP rankedSubTriples by obj LEFT OUTER, rankedResources by resource;
-rankedObjTriples = FOREACH objGroup GENERATE FLATTEN(rankedSubTriples), FLATTEN(rankedResources.ranking) AS objRank;
+objGroup = JOIN rankedSubTriples by obj LEFT OUTER, rankedResources by resource;
+---rankedObjTriples = FOREACH objGroup GENERATE FLATTEN(rankedSubTriples), FLATTEN(rankedResources.ranking) AS objRank;
 """
 
 if aggregateMethod == "avg":
 	pigScript += """
 rankedTriples = FOREACH rankedObjTriples GENERATE 
-		rankedSubTriples::distinctTriples::sub, 
-		rankedSubTriples::distinctTriples::pred,
-		rankedSubTriples::distinctTriples::obj,
-		AVG({(rankedSubTriples::subRank is null? 0F: rankedSubTriples::subRank),(objRank is null? 0F: objRank)}) AS ranking;"""
+		$0,$1,$2,
+		AVG({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking;"""
 elif aggregateMethod == "max":
 	pigScript += """
 rankedTriples = FOREACH rankedObjTriples GENERATE 
-		rankedSubTriples::distinctTriples::sub, 
-		rankedSubTriples::distinctTriples::pred,
-		rankedSubTriples::distinctTriples::obj,
-		MAX({(rankedSubTriples::subRank is null? 0F: rankedSubTriples::subRank),(objRank is null? 0F: objRank)}) AS ranking;"""
+		$0,$1,$2,
+		MAX({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking;"""
 elif aggregateMethod == "min":
 	pigScript += """
 rankedTriples = FOREACH rankedObjTriples GENERATE 
-		rankedSubTriples::distinctTriples::sub, 
-		rankedSubTriples::distinctTriples::pred,
-		rankedSubTriples::distinctTriples::obj,
-		MIN({(rankedSubTriples::subRank is null? 1F: rankedSubTriples::subRank),(objRank is null? 1F: objRank)}) AS ranking;"""
+		$0,$1,$2,
+		MIN({($4 is null? 1F: $4),($6 is null? 1F: $6)}) AS ranking;"""
 else: 
 	pigScript += """
 WRONGGGG. how to aggregate?!"""
