@@ -72,8 +72,9 @@ storeTriples = FOREACH orderedTriples GENERATE $3 ;"""
 storeTriples = FOREACH orderedTriples GENERATE $0, $1, $2, '.' ;"""
 
 pigScript += """
+distinctTriples = DISTINCT storeTriples;
 rmf $outputFile
-STORE storeTriples INTO '$outputFile' USING PigStorage();"""
+STORE distinctTriples INTO '$outputFile' USING PigStorage();"""
 
 P = Pig.compile(pigScript)
 stats = P.bind().runSingle()

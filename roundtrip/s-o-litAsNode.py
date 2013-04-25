@@ -29,37 +29,39 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 
 pigScript += """
 triples = LOAD '$origGraph' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
+distinctTriples = DISTINCT triples;
+
 rankedResources = LOAD '$rankingsFile' USING PigStorage() AS (resource:chararray, ranking:double);
 
-subGroup = COGROUP triples by sub, rankedResources by resource;
+subGroup = COGROUP distinctTriples by sub LEFT OUTER, rankedResources by resource;
 --- generates: subGroup: {group: chararray,triples: {(sub: chararray,pred: chararray,obj: chararray)},rankedResources: {(resource: chararray,ranking: double)}}
-rankedSubTriples = FOREACH subGroup GENERATE FLATTEN(triples), FLATTEN(rankedResources.ranking) AS subRank;
+rankedSubTriples = FOREACH subGroup GENERATE FLATTEN(distinctTriples), FLATTEN(rankedResources.ranking) AS subRank;
 ---generates: rankedSubTriples: {triples::sub: chararray,triples::pred: chararray,triples::obj: chararray,subRank: double}
 
-objGroup = COGROUP rankedSubTriples by obj, rankedResources by resource;
+objGroup = COGROUP rankedSubTriples by obj LEFT OUTER, rankedResources by resource;
 rankedObjTriples = FOREACH objGroup GENERATE FLATTEN(rankedSubTriples), FLATTEN(rankedResources.ranking) AS objRank;
 """
 
 if aggregateMethod == "avg":
 	pigScript += """
 rankedTriples = FOREACH rankedObjTriples GENERATE 
-		rankedSubTriples::triples::sub, 
-		rankedSubTriples::triples::pred,
-		rankedSubTriples::triples::obj,
+		rankedSubTriples::distinctTriples::sub, 
+		rankedSubTriples::distinctTriples::pred,
+		rankedSubTriples::distinctTriples::obj,
 		AVG({(rankedSubTriples::subRank is null? 0F: rankedSubTriples::subRank),(objRank is null? 0F: objRank)}) AS ranking;"""
 elif aggregateMethod == "max":
 	pigScript += """
 rankedTriples = FOREACH rankedObjTriples GENERATE 
-		rankedSubTriples::triples::sub, 
-		rankedSubTriples::triples::pred,
-		rankedSubTriples::triples::obj,
+		rankedSubTriples::distinctTriples::sub, 
+		rankedSubTriples::distinctTriples::pred,
+		rankedSubTriples::distinctTriples::obj,
 		MAX({(rankedSubTriples::subRank is null? 0F: rankedSubTriples::subRank),(objRank is null? 0F: objRank)}) AS ranking;"""
 elif aggregateMethod == "min":
 	pigScript += """
 rankedTriples = FOREACH rankedObjTriples GENERATE 
-		rankedSubTriples::triples::sub, 
-		rankedSubTriples::triples::pred,
-		rankedSubTriples::triples::obj,
+		rankedSubTriples::distinctTriples::sub, 
+		rankedSubTriples::distinctTriples::pred,
+		rankedSubTriples::distinctTriples::obj,
 		MIN({(rankedSubTriples::subRank is null? 1F: rankedSubTriples::subRank),(objRank is null? 1F: objRank)}) AS ranking;"""
 else: 
 	pigScript += """

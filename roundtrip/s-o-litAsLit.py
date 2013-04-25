@@ -36,9 +36,6 @@ explodedResources = FOREACH rankedResources {
 	newResource = (resource matches '.*@#@#.*' ? STRSPLIT(resource, '@#@#', 2).$1: resource);
 	
 	
-	---newObj = (newObjTuple.$1 is null? newObjTuple.$0: newObjTuple.$1);
-	----newObjTuple = STRSPLIT(rankedResources.resource, '@#@#', 2);
-	---newObj = (newObjTuple.$1 is null? newObjTuple.$0: newObjTuple.$1);
 	GENERATE newResource AS resource, ranking AS ranking;
 }
 cleanedResources = DISTINCT explodedResources;
@@ -46,7 +43,9 @@ cleanedResources = DISTINCT explodedResources;
 subJoined = JOIN distinctTriples by sub, cleanedResources by resource;
 
 objJoined = JOIN subJoined by $2, cleanedResources by resource;
+
 ---filteredSubJoin = FILTER joinedTriples BY $2 == $4;
+
 """
 
 if aggregateMethod == "avg":
@@ -57,13 +56,13 @@ elif aggregateMethod == "max":
 rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, MAX({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;"""
 elif aggregateMethod == "min":
 	pigScript += """
-rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, MIN({($4 is null? 1F: $4),($6 is null? 1F: $6)}) AS ranking ;"""
+rankedTriples = FOREACH objJoined GENERATE $0 AS sub, $1 AS pred, $2 AS obj, MIN({($4 is null? 0F: $4),($6 is null? 0F: $6)}) AS ranking ;"""
 else: 
 	pigScript += """
 WRONGGGG. how to aggregate?!"""
 
 pigScript += """
-distinctRankedTriples = DISTINCT rankedTriples;
+
 
 rmf $outputFile
 STORE distinctRankedTriples INTO '$outputFile' USING PigStorage();
