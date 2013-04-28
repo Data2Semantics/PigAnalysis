@@ -9,6 +9,7 @@ outputFile = "dbp/roundtrip/dbp_s-o_unweighted_noLit/directed_indegree"
 
 if (len(sys.argv) < 3):
 	print "takes as argument the analysis file to rewrite, and how to aggregate ('min', 'max', or 'avg'). optional arg: output file"
+	sys.exit(1)
 
 rankingsFile = sys.argv[1]
 aggregateMethod = sys.argv[2]

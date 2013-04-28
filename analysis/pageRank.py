@@ -1,5 +1,6 @@
 #!/usr/bin/python
 from org.apache.pig.scripting import Pig
+import sys
 """
 input:
 www.A.com    1    { (www.B.com), (www.C.com), (www.D.com), (www.E.com) }
@@ -10,20 +11,17 @@ www.E.com    1    { (www.A.com) }
 www.F.com    1    { (www.B.com), (www.C.com) }"""
 
 
-rewrittenGraph = "ops/rewrite/df_s-o-litAsLit_unweighted"
+preprocessedGraph = "ops/rewrite/df_s-o-litAsLit_unweighted"
 
 if (len(sys.argv) < 2):
-    print "takes as argument the rewritten graph to perform the analysis on. Optional argument is custom outputfile"
+    print "takes as argument the preprocced rewritten graph to perform the analysis on (in tmp dir probably)"
+    sys.exit(1)
 
-rewrittenGraph = sys.argv[1]
+preprocessedGraph = sys.argv[1]
 
-dataset=rewrittenGraph.split("/")[0]
+dataset=preprocessedGraph.split("/")[0]
 
-outputFile = "%s/analysis/%s_directed_pagerank" % (dataset, basename(rewrittenGraph))
 
-if (len(sys.argv) == 3):
-    outputFile = sys.argv[2];
-    
     
 P = Pig.compile("""
 previous_pagerank = 
@@ -72,8 +70,9 @@ STORE max_diff INTO '$max_diff';
 """)
 
 d = 0.5 #damping factor
-docs_in= "dbp_large.nt_unweightedLitAsNodeGrouped"
-out_dir = "dbp_large.nt_pagerank/"
+docs_in= preprocessedGraph
+
+out_dir = "%s/tmp/%s" % (dataset, basename(preprocessedGraph))
 inputType = "chararray" #use long if we have hashed urls
 for i in range(10):
     docs_out = out_dir + "pagerank_data_" + str(i + 1)
