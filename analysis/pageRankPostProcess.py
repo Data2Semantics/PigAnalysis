@@ -19,11 +19,13 @@ if (len(sys.argv) < 2):
 
 
 pagerank = sys.argv[1]
-
+if pagerank[0] == "/":
+    pagerank = pagerank.replace("/user/lrietvld/", "")
+    
 dataset=pagerank.split("/")[0]
 
 strPos = pagerank.index("pagerank_data");
-outputFile = "%s/analysis/%s_directed_pagerank" % (dataset, basename(pagerank)[:strPos])
+outputFile = "%s/analysis/%s" % (dataset, basename(pagerank)[:strPos])
 
 if (len(sys.argv) == 3):
     outputFile = sys.argv[2];
