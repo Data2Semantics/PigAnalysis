@@ -33,7 +33,7 @@ distinctGraph = DISTINCT graph;
 
 groupedGraph = GROUP graph BY lhs;
 
-outputGraph = FOREACH groupedGraph GENERATE group, 1, graph;
+outputGraph = FOREACH groupedGraph GENERATE group, 1, graph.rhs;
 rmf $outputFile
 STORE outputGraph INTO '$outputFile' USING PigStorage();
 """
