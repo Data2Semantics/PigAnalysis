@@ -1,15 +1,7 @@
 #!/usr/bin/python
 from org.apache.pig.scripting import Pig
 import sys
-"""
-input:
-www.A.com    1    { (www.B.com), (www.C.com), (www.D.com), (www.E.com) }
-www.B.com    1    { (www.D.com), (www.E.com) }
-www.C.com    1    { (www.D.com) }
-www.D.com    1    { (www.B.com) }
-www.E.com    1    { (www.A.com) }
-www.F.com    1    { (www.B.com), (www.C.com) }"""
-
+from os.path import dirname, basename, splitext
 
 rewrittenGraph = "ops/rewrite/df_s-o-litAsLit_unweighted"
 
@@ -18,10 +10,10 @@ if (len(sys.argv) < 2):
     sys.exit(1)
 
 rewrittenGraph = sys.argv[1]
+if rewrittenGraph[0] == "/":
+	rewrittenGraph = rewrittenGraph.replace("/user/lrietvld/", "")
 
-dataset=rewrittenGraph.split("/")[0]
-
-outputFile = "%s/tmp/%s_directed_pagerank" % (dataset, basename(rewrittenGraph))
+outputFile = "%s/tmp/%s_directed_pagerank" % (rewrittenGraph.split("/")[0], basename(rewrittenGraph))
 
 if (len(sys.argv) == 3):
     outputFile = sys.argv[2];
@@ -43,12 +35,8 @@ groupedGraph = GROUP graph BY lhs;
 
 outputGraph = FOREACH groupedGraph GENERATE group, 1, graph;
 rmf $outputFile
-STORE weightedResources INTO '$outputFile' USING PigStorage();
+STORE outputGraph INTO '$outputFile' USING PigStorage();
 """
 
 P = Pig.compile(pigScript)
 stats = P.bind().runSingle()
-
-
-
-

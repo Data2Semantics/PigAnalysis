@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from org.apache.pig.scripting import Pig
 import sys
+from os.path import dirname, basename, splitext
 """
 input:
 www.A.com    1    { (www.B.com), (www.C.com), (www.D.com), (www.E.com) }
