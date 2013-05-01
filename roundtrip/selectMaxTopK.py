@@ -36,7 +36,7 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 pigScript += """
 rankedTriples = LOAD '$inputFile' USING PigStorage() AS (sub:chararray, pred:chararray, obj:chararray, ranking:double);
 triplesDistinct = DISTINCT rankedTriples;---to reduce size. there might be some redundant triples
-rankedTriplesGrouped = group triplesDistinct all;"""
+"""
 
 
 if exactK > 0:
@@ -46,6 +46,7 @@ storeTriples = LIMIT orderedTriples """ + str(exactK) + """;
 distinctTriples = DISTINCT storeTriples;"""
 elif percentage != "1":
     pigScript += """
+rankedTriplesGrouped = group triplesDistinct all;
 orderedTriples = ORDER triplesDistinct BY ranking DESC;
 tripleCount = foreach rankedTriplesGrouped generate COUNT(triplesDistinct) as count;
 limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
