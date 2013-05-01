@@ -38,8 +38,6 @@ rankedTriples = LOAD '$inputFile' USING PigStorage() AS (sub:chararray, pred:cha
 triplesDistinct = DISTINCT rankedTriples;---to reduce size. there might be some redundant triples
 rankedTriplesGrouped = group triplesDistinct all;"""
 
-pigScript += """
-orderedTriples = ORDER triplesDistinct BY ranking DESC;"""
 
 if exactK > 0:
     pigScript += """
