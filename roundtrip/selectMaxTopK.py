@@ -43,9 +43,12 @@ orderedTriples = ORDER triplesDistinct BY ranking DESC;"""
 
 if exactK > 0:
     pigScript += """
-storeTriples = LIMIT orderedTriples """ + str(exactK) + """;"""
+orderedTriples = ORDER triplesDistinct BY ranking DESC;
+storeTriples = LIMIT orderedTriples """ + str(exactK) + """;
+distinctTriples = DISTINCT storeTriples;"""
 elif percentage != "1":
     pigScript += """
+orderedTriples = ORDER triplesDistinct BY ranking DESC;
 tripleCount = foreach rankedTriplesGrouped generate COUNT(triplesDistinct) as count;
 limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
 
@@ -59,20 +62,23 @@ filteredTriples = FILTER limitTriples BY ranking != (double)minRanking.val;
 """
     if onlyWeights:
         pigScript += """
-storeTriples = FOREACH filteredTriples GENERATE $3 ;"""
+storeTriples = FOREACH filteredTriples GENERATE $3 ;
+distinctTriples = DISTINCT storeTriples;"""
     else:
         pigScript += """
-storeTriples = FOREACH filteredTriples GENERATE $0, $1, $2, '.' ;"""
+storeTriples = FOREACH filteredTriples GENERATE $0, $1, $2, '.' ;
+distinctTriples = DISTINCT storeTriples;"""
+
 else:
     if onlyWeights:
         pigScript += """
-storeTriples = FOREACH orderedTriples GENERATE $3 ;"""
+distinctTriples = FOREACH triplesDistinct GENERATE $3 ;"""
     else:
         pigScript += """
-storeTriples = FOREACH orderedTriples GENERATE $0, $1, $2, '.' ;"""
+distinctTriples = FOREACH triplesDistinct GENERATE $0, $1, $2, '.' ;"""
 
 pigScript += """
-distinctTriples = DISTINCT storeTriples;
+
 rmf $outputFile
 STORE distinctTriples INTO '$outputFile' USING PigStorage();"""
 
