@@ -24,8 +24,9 @@ if pagerank[0] == "/":
     
 dataset=pagerank.split("/")[0]
 
-strPos = pagerank.index("pagerank_data");
-outputFile = "%s/analysis/%s" % (dataset, basename(pagerank)[:strPos])
+inputBasename = basename(pagerank)
+strPos = inputBasename.index("pagerank_data");
+outputFile = "%s/analysis/%s" % (dataset, inputBasename[:strPos])
 
 if (len(sys.argv) == 3):
     outputFile = sys.argv[2];
