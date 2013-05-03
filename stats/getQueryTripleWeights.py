@@ -35,10 +35,9 @@ queryTriples = LOAD '$queryNtripleFile' USING NtLoader() AS (sub:chararray, pred
 
 
 distinctGraph = DISTINCT graph;
-distinctTriples = DISTINCT queryTriples;
 
 
-joinedQueryTriples = JOIN distinctGraph BY (sub, pred, obj), distinctTriples BY (sub, pred, obj);
+joinedQueryTriples = JOIN distinctGraph BY (sub, pred, obj), queryTriples BY (sub, pred, obj);
 
 resultsToStore = FOREACH joinedQueryTriples GENERATE $0, $1, $2, $3;---triple, with weight
 

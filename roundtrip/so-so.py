@@ -37,7 +37,7 @@ cleanedResources = FOREACH rankedResources {
 joinedTriples = JOIN distinctTriples BY (sub, obj) LEFT OUTER, cleanedResources BY (lhs, rhs);
 
 
-outputGraph = FOREACH joinedTriples GENERATE $0, $1, $2, $5;
+outputGraph = FOREACH joinedTriples GENERATE $0, $1, $2, ($5 is null? 0F: $5);
 distinctGraph = DISTINCT outputGraph;
 
 rmf $outputFile
