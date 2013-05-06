@@ -9,7 +9,8 @@ if (len(sys.argv) < 2):
     print "takes as argument the rewritten graph to perform the analysis on. Optional argument is custom outputfile"
 
 rewrittenGraph = sys.argv[1]
-
+if rewrittenGraph[0] == "/":
+        rewrittenGraph = rewrittenGraph.replace("/user/lrietvld/", "")
 dataset=rewrittenGraph.split("/")[0]
 
 outputFile = "%s/analysis/%s_directed_outdegree" % (dataset, basename(rewrittenGraph))
@@ -28,8 +29,6 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 pigScript += """
 graph = LOAD '$rewrittenGraph' USING PigStorage() AS (lhs:chararray, rhs:chararray);
 distinctGraph = DISTINCT graph;
-weightedResources = FOREACH GRAPH GENERATE rhs, 1 AS indegree;
-
 
 graphGrouped = GROUP distinctGraph BY lhs;
 

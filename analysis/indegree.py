@@ -9,8 +9,9 @@ if (len(sys.argv) < 2):
     print "takes as argument the rewritten graph to perform the analysis on. Optional argument is custom outputfile"
 
 rewrittenGraph = sys.argv[1]
-
-dataset=rewrittenGraph.split("/")[0]
+if rewrittenGraph[0] == "/":
+        rewrittenGraph = rewrittenGraph.replace("/user/lrietvld/", "")
+dataset = rewrittenGraph.split("/")[0]
 
 outputFile = "%s/analysis/%s_directed_indegree" % (dataset, basename(rewrittenGraph))
 

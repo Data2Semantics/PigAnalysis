@@ -30,13 +30,13 @@ rdfDistinct = DISTINCT largeGraph;---to reduce size. there might be some redunda
 
 ---get counts for a given resource
 subGrouped = GROUP rdfDistinct BY sub;
-subCounts = FOREACH subGroup GENERATE group AS resource, COUNT(rdfDistinct) AS count;
+subCounts = FOREACH subGrouped GENERATE group AS resource, COUNT(rdfDistinct) AS count;
 
-predGrouped = GROUP rdfDistinct BY sub;
+predGrouped = GROUP rdfDistinct BY pred;
 predCounts = FOREACH predGrouped GENERATE group AS resource, COUNT(rdfDistinct) AS count;
 
-objGrouped = GROUP rdfDistinct BY sub;
-objCounts = FOREACH objGroup GENERATE group AS resource, COUNT(rdfDistinct) AS count;
+objGrouped = GROUP rdfDistinct BY obj;
+objCounts = FOREACH objGrouped GENERATE group AS resource, COUNT(rdfDistinct) AS count;
 
 countUnion = UNION subCounts, predCounts, objCounts;
 unionGrouped = GROUP countUnion BY $0;
@@ -45,26 +45,26 @@ resourceCounts = FOREACH unionGrouped GENERATE group AS resource, SUM(countUnion
 ---get to a triple weight
 triplesSubGrouped = JOIN rdfDistinct BY sub LEFT OUTER, resourceCounts BY resource; 
 triplesPredGrouped = JOIN triplesSubGrouped BY pred LEFT OUTER, resourceCounts BY resource; 
-triplesObjGrouped = JOIN triplesPredGrouped BY sub LEFT OUTER, resourceCounts BY resource; 
+triplesObjGrouped = JOIN triplesPredGrouped BY obj LEFT OUTER, resourceCounts BY resource; 
 
 weightedTriples = FOREACH triplesObjGrouped {
     subCount = $4;
     predCount = $6;
     objCount = $8;
-    tripleWeight = $4 + $6 + $8;
+    tripleWeight = ($4 + $6 + $8);
     
-    GENERATE sub AS sub, pred AS pred, obj AS obj, tripleWeight AS tripleWeight
+    GENERATE sub AS sub, pred AS pred, obj AS obj, tripleWeight AS tripleWeight;
 }
 
 ---limit our results
 orderedTriples = ORDER weightedTriples BY tripleWeight DESC;
-rdfGrouped = group rdfDistinct all;;
+rdfGrouped = group rdfDistinct all;
 tripleCount = foreach rdfGrouped generate COUNT(rdfDistinct) as count;
 
 limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
 
 limitTriplesGrouped = group limitTriples all;
-minRanking = FOREACH limitTriplesGrouped GENERATE MIN(limitTriples.ranking) AS val;
+minRanking = FOREACH limitTriplesGrouped GENERATE MIN(limitTriples.tripleWeight) AS val;
 
 --ok, so we already have 50%, and we now the minimum ranking value in our set
 --remove the tuples containing this minimum ranking value

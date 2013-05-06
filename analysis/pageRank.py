@@ -72,10 +72,19 @@ STORE max_diff INTO '$max_diff';
 
 d = 0.5 #damping factor
 docs_in= preprocessedGraph
+if (len(sys.argv) <= 4):
+    docs_in = sys.argv[2]
+if (len(sys.argv) <= 4):
+    start_at = (int)(sys.argv[3])
+else:
+    start_at = 0
+
 
 out_dir = "%s/tmp/%s" % (dataset, basename(preprocessedGraph))
 inputType = "chararray" #use long if we have hashed urls
-for i in range(10):
+for i in range(20):
+    if i < start_at:
+	continue
     docs_out = out_dir + "pagerank_data_" + str(i + 1)
     max_diff = out_dir + "max_diff_" + str(i + 1)
     Pig.fs("rmr " + docs_out)
