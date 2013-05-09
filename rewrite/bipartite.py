@@ -1,6 +1,7 @@
 #!/usr/bin/python
 from org.apache.pig.scripting import Pig
 import sys
+from os.path import dirname, basename, splitext
 
 
 inputFile = "dbp/dbp.nt"
@@ -29,7 +30,7 @@ pigScript += """rewrittenGraph = FOREACH rdfDistinct{
     GENERATE TOBAG(TOTUPLE(identifier, sub), TOTUPLE(identifier,pred), TOTUPLE(identifier,obj));
 } 
 
-outputGraph = FOREACH rewrittenGraph FLATTEN(*);
+outputGraph = FOREACH rewrittenGraph GENERATE FLATTEN($0);
 """
 
 
