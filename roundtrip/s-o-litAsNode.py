@@ -3,7 +3,6 @@ from org.apache.pig.scripting import Pig
 import sys
 from os.path import dirname, basename, splitext
 
-origGraph = "dbp/dbp.nt"
 rankingsFile = "dbp/analysis/dbp_s-o_unweighted_noLit/directed_indegree"
 outputFile = "dbp/roundtrip/dbp_s-o_unweighted_noLit/directed_indegree"
 
