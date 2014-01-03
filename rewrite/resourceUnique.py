@@ -12,7 +12,7 @@ if len(sys.argv) <= 1:
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
 
-outputFile = "%s/rewrite/%s_s-o-litWithPred_unweighted" % (dirname(inputFile), splitext(basename(inputFile))[0])
+outputFile = "%s/rewrite/%s_resourceUnique" % (dirname(inputFile), splitext(basename(inputFile))[0])
 
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
@@ -29,7 +29,7 @@ rdfDistinct = DISTINCT rdfGraph;---to reduce size. there might be some redundant
 
 pigScript += """
 rewrittenGraph = FOREACH rdfDistinct {
-    newObj = (SUBSTRING(obj, 0, 1) == '"' ? StringConcat(pred, '@#@#', obj): obj);
+    newObj = (SUBSTRING(obj, 0, 1) == '"' ? StringConcat(sub, '@#@#', pred, '@#@#', obj): obj);
     GENERATE sub, newObj, 1;
 }
 rmf $outputFile

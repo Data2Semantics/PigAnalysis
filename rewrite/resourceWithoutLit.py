@@ -12,8 +12,7 @@ if len(sys.argv) <= 1:
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
 
-outputFile = "%s/rewrite/%s_s-o-litAsNode_unweighted" % (dirname(inputFile), splitext(basename(inputFile))[0])
-
+outputFile = "%s/rewrite/%s_resourceWithoutLitd" % (dirname(inputFile), splitext(basename(inputFile))[0])
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
 DEFINE UnorderedPairs datafu.pig.bags.UnorderedPairs();
@@ -23,8 +22,15 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 """
 
 pigScript += """rdfGraph = LOAD '$inputFile' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
-rdfDistinct = DISTINCT rdfGraph;---to reduce size. there might be some redundant triples
+filteredGraph = FILTER rdfGraph BY (SUBSTRING(obj, 0, 1) != '"');
+rdfDistinct = DISTINCT filteredGraph;---to reduce size. there might be some redundant triples
 """
+#
+#pigScript += """
+#filteredGraph1 = filter rdfGraph by sub is not null;
+#filteredGraph2 = filter filteredGraph1 by pred is not null;
+#filteredGraph = filter filteredGraph2 by obj is not null;
+#"""
 
 pigScript += """rewrittenGraph = FOREACH rdfDistinct GENERATE sub, obj, 1;
 rmf $outputFile

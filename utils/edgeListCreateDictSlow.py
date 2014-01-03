@@ -7,8 +7,8 @@ inputFile = "dbp/dbp.nt"
 
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
-outputDict = "%s/rewrite/%s_dict" % (dirname(inputFile), basename(inputFile))
-longOutputFile = "%s/rewrite/%s_long" % (dirname(inputFile), basename(inputFile))
+outputDict = "%s_dict" % (inputFile)
+longOutputFile = "%s_long" % (inputFile)
 
     
 
@@ -36,10 +36,10 @@ resourcesDistinct = DISTINCT resources;
 ---create dictionary
 resourcesGrouped = GROUP resourcesDistinct ALL;
 dictionary = FOREACH resourcesGrouped GENERATE flatten(Enumerate(resourcesDistinct));
-
+STORE dictionary INTO '$outputDict' USING PigStorage();
 """
 
-pigScript += """
+bla += """
 distinctGraphLhsJoined = JOIN distinctGraph BY lhs, dictionary BY $0;
 
 distinctGraphRhsJoined = JOIN distinctGraphLhsJoined BY rhs, dictionary BY $0;
