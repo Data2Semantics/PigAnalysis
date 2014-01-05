@@ -12,7 +12,7 @@ if len(sys.argv) <= 1:
 if len(sys.argv) > 1:
     dataset = sys.argv[1]
 
-origFile = "%s/rewrite/%s_resourceUnique" % (dataset, dataset)
+origFile = "%s/rewrite/resourceUnique" % (dataset)
 hashedFile = "%s_long" % (origFile)
 
 

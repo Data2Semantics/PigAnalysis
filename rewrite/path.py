@@ -12,7 +12,7 @@ if len(sys.argv) <= 1:
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
 
-outputFile = "%s/rewrite/%s_path" % (dirname(inputFile), splitext(basename(inputFile))[0])
+outputFile = "%s/rewrite/path" % (dirname(inputFile))
 if (len(sys.argv) == 3):
     outputFile = sys.argv[2]
     

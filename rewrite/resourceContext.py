@@ -12,7 +12,7 @@ if len(sys.argv) <= 1:
 if len(sys.argv) > 1:
     inputFile = sys.argv[1]
 
-outputFile = "%s/rewrite/%s_resourceContext" % (dirname(inputFile), splitext(basename(inputFile))[0])
+outputFile = "%s/rewrite/resourceContext" % (dirname(inputFile))
 
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
