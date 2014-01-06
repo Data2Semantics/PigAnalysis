@@ -41,7 +41,7 @@ distinctGraph = DISTINCT graph;
 graphGrouped = GROUP distinctGraph BY rhs;
 
 weightedResources = FOREACH graphGrouped GENERATE group, COUNT(distinctGraph);
-
+rmf $outputFile
 STORE weightedResources INTO '$outputFile' USING PigStorage();
 """
 
