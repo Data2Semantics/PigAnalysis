@@ -1,0 +1,1 @@
+resourceSimple.py

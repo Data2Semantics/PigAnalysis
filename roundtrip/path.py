@@ -4,16 +4,25 @@ import sys
 from os.path import dirname, basename, splitext
 
 
-if (len(sys.argv) < 3):
-	print "takes as argument the analysis file to rewrite, and how to aggregate ('min', 'max', or 'avg' (unused though, no need to aggregate)). optional arg: output file"
+if (len(sys.argv) < 2):
+	print "takes as argument the analysis file to rewrite. optional arg: output file"
+	sys.exit(1);
 
 rankingsFile = sys.argv[1]
-dataset=rankingsFile.split("/")[0]
+if rankingsFile[0] == "/":
+    #if input is absolute, make it relative (yes, ugly indeed)
+    argList = rankingsFile.split("/")
+    argList = argList[3:]
+    rankingsFile = ("/").join(argList)
+
+dataset = rankingsFile.split("/")[0]
 
 origGraph = "%s/%s.nt" % (dataset,dataset)
+
+
 outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile))
-if len(sys.argv) > 3:
-	outputFile = sys.argv[3]
+if len(sys.argv) > 2:
+	outputFile = sys.argv[2]
 	
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
