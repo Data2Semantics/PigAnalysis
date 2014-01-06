@@ -38,7 +38,7 @@ dict = LOAD '$dictPath' USING PigStorage() AS (dictText:chararray, dictLong:long
 
 joinedRankings = join longRankings by resourceId, dict by dictLong;
 
-cleanedRankings = foreach longsRankings GENERATE $3, $2;
+cleanedRankings = foreach joinedRankings GENERATE $2, $1;
 
 
 rmf $output
