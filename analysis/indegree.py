@@ -8,12 +8,19 @@ rewrittenGraph = "df/rewrite/df_s-o-litAsLit_unweighted"
 if (len(sys.argv) < 2):
     print "takes as argument the rewritten graph to perform the analysis on. Optional argument is custom outputfile"
 
+
+
+
+    
 rewrittenGraph = sys.argv[1]
 if rewrittenGraph[0] == "/":
-        rewrittenGraph = rewrittenGraph.replace("/user/lrietvld/", "")
-dataset = rewrittenGraph.split("/")[0]
+    #if input is absolute, make it relative (yes, ugly indeed)
+    argList = rewrittenGraph.split("/")
+    argList = argList[3:]
+    rewrittenGraph = ("/").join(argList)
 
-outputFile = "%s/analysis/%s_directed_indegree" % (dataset, basename(rewrittenGraph))
+dataset = rewrittenGraph.split("/")[0]
+outputFile = "%s/analysis/%s_indegree" % (dataset, basename(rewrittenGraph))
 
 if (len(sys.argv) == 3):
     outputFile = sys.argv[2];
