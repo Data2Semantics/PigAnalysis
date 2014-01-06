@@ -3,10 +3,13 @@ from org.apache.pig.scripting import Pig
 import sys
 from os.path import dirname, basename, splitext
 
-inputFile = "dbp/dbp.nt"
 
-if len(sys.argv) > 1:
-    inputFile = sys.argv[1]
+if (len(sys.argv) < 2):
+    print "takes as argument the rewritten file to create a dictionary for"
+    sys.exit(1)
+
+
+inputFile = sys.argv[1]
 outputDict = "%s_dict" % (inputFile)
 longOutputFile = "%s_long" % (inputFile)
 

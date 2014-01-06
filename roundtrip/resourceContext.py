@@ -7,19 +7,19 @@ origGraph = "dbp/dbp.nt"
 rankingsFile = "dbp/analysis/dbp_s-o_unweighted_noLit/directed_indegree"
 outputFile = "dbp/roundtrip/dbp_s-o_unweighted_noLit/directed_indegree"
 
-if (len(sys.argv) < 3):
+if (len(sys.argv) < 2):
 	print "takes as argument the analysis file to rewrite, and how to aggregate ('min', 'max', or 'avg'). optional arg: output file"
-	sys.exit(1)
+
 
 
 rankingsFile = sys.argv[1]
-aggregateMethod = sys.argv[2]
+aggregateMethod = "max"
 dataset=rankingsFile.split("/")[0]
 
 origGraph = "%s/%s.nt" % (dataset,dataset)
-outputFile = "%s/roundtrip/%s_%s" % (dataset, basename(rankingsFile), aggregateMethod)
-if len(sys.argv) > 3:
-	outputFile = sys.argv[3]
+outputFile = "%s/roundtrip/%s" % (dataset, basename(rankingsFile))
+if len(sys.argv) > 2:
+	outputFile = sys.argv[2]
 	
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
