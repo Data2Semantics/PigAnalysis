@@ -23,9 +23,9 @@ DEFINE UnorderedPairs datafu.pig.bags.UnorderedPairs();
 DEFINE Enumerate com.data2semantics.pig.udfs.EnumerateSafe();
 REGISTER d2s4pig/target/d2s4pig-1.0.jar
 DEFINE NtLoader com.data2semantics.pig.loaders.NtLoader();
-/*DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();*/
-REGISTER piggybank/contrib/piggybank/java/piggybank.jar
-DEFINE LONGHASH org.apache.pig.piggybank.evaluation.string.HashFNV();
+DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
+/*REGISTER piggybank/contrib/piggybank/java/piggybank.jar*/
+/*DEFINE LONGHASH org.apache.pig.piggybank.evaluation.string.HashFNV();*/
 graph = LOAD '$inputFile' USING PigStorage() AS (lhs:chararray, rhs:chararray);
 
 ---use lots of distincts (reduce our bag size as often and much as possible for performance reasons)
