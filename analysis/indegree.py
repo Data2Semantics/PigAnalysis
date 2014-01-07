@@ -37,12 +37,23 @@ pigScript += """
 graph = LOAD '$rewrittenGraph' USING PigStorage() AS (lhs:chararray, rhs:chararray);
 distinctGraph = DISTINCT graph;
 
-
 graphGrouped = GROUP distinctGraph BY rhs;
 
+---calc indegree
 weightedResources = FOREACH graphGrouped GENERATE group, COUNT(distinctGraph);
+
+---we still need to add resources with indegree 0. we do this below
+---intialize all with indegree zero
+lhsGraph = FOREACH graph GENERATE lhs, 0;
+---combine with our actual indegree
+allWeightedResources = UNION weightedResources, lhsGraph;
+
+---this will contain duplicates, so join again, and calculate the sum of the weights (i.e. zero + 'something')
+groupedAllWeightedResources = GROUP allWeightedResources BY $0;
+distinctAllWeightedResources = FOREACH groupedAllWeightedResources GENERATE group, SUM(allWeightedResources.$1);
+
 rmf $outputFile
-STORE weightedResources INTO '$outputFile' USING PigStorage();
+STORE distinctAllWeightedResources INTO '$outputFile' USING PigStorage();
 """
 
 
