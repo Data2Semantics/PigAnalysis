@@ -24,7 +24,7 @@ dataset = sampleFile.split("/")[0]
 
 
 outputFile = "%s/evaluation/weightDistribution/%s" % (dataset, basename(sampleFile))
-if len(sys.argv) < 3:
+if len(sys.argv) > 2:
     outputFile = sys.argv[2]
 
 pigScript = """
@@ -39,9 +39,10 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 pigScript += """
 
 sampleTriples = LOAD '$sampleFile' USING PigStorage() AS (sub:chararray, pred:chararray, obj:chararray, ranking:float);
-groupedTriples = GROUP sampleTriples BY ranking;
+prunedTriples = FOREACH sampleTriples GENERATE ranking;
+groupedTriples = GROUP prunedTriples BY ranking;
 
-rankingCount = FOREACH groupedTriples GENERATE group, COUNT(groupedTriples);
+rankingCount = FOREACH groupedTriples GENERATE group, COUNT(prunedTriples);
 
 rmf $outputFile
 STORE rankingCount INTO '$outputFile' USING PigStorage();
