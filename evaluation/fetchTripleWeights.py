@@ -20,8 +20,8 @@ if sampleFile[0] == "/":
 dataset = sampleFile.split("/")[0]
 
 
-queryTripleFile = "%s/evaluation/triples" % (dataset)
-if len(sys.argv) < 3:
+queryTripleFile = "%s/evaluation/qTriples" % (dataset)
+if len(sys.argv) > 2:
     queryTripleFile = sys.argv[2]
 
 
@@ -42,7 +42,7 @@ qTriples = LOAD '$queryTripleFile' USING TextLoader() AS (triple:chararray);
 
 sampleTriples = LOAD '$sampleFile' USING PigStorage() AS (sub:chararray, pred:chararray, obj:chararray, ranking:float);
 
-sampleTriplesConcat = FOREACH rdfDistinct GENERATE StringConcat(sub, '\t', pred, '\t', obj) AS triple, float AS float;
+sampleTriplesConcat = FOREACH sampleTriples GENERATE StringConcat(sub, '\\t', pred, '\\t', obj) AS triple, ranking;
 
 joinedTriples = JOIN qTriples BY $0, sampleTriplesConcat BY $0;
 
