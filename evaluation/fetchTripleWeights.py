@@ -25,7 +25,7 @@ if len(sys.argv) > 2:
     queryTripleFile = sys.argv[2]
 
 
-outputFile = "%s/evaluation/qtriples/%s" % (dataset, basename(sampleFile))
+outputFile = "%s/evaluation/qTripleWeights/%s" % (dataset, basename(sampleFile))
 
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
