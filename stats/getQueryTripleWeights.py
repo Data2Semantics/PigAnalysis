@@ -3,7 +3,6 @@ from org.apache.pig.scripting import Pig
 import sys
 from os.path import dirname, basename, splitext
 
-roundtrippedGraph = "df/rewrite/df_s-o-litAsLit_unweighted"
 queryNtripleFile = ""
 
 if len(sys.argv) < 3:
