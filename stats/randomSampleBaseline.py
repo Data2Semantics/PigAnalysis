@@ -10,7 +10,7 @@ iteration = sys.argv[2]
 ntripleFile = "%s/%s.nt"  % (dataset, dataset)
 
 
-outputFile = "%s/baselines/randomSample_%s"  % (dataset, iteration)
+outputFile = "%s/baselines/randomSampleBaseline_%s"  % (dataset, iteration)
     
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
