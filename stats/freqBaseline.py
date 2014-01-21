@@ -2,19 +2,16 @@
 from org.apache.pig.scripting import Pig
 import sys
 
-inputFile = ""
-outputFile = ""
-percentage = "0.5"
-onlyWeights = False
-if (len(sys.argv) != 4):
-    print "arg1: input file (e.g." + inputFile + "), arg2: outputFile, arg3: top-k percentage (e.g. 0.5)"
-if len(sys.argv) > 1:
-    inputFile = sys.argv[1]
-if len(sys.argv) > 2:
-    outputFile = sys.argv[2]
-if len(sys.argv) > 3:
-    percentage = sys.argv[3]
 
+if len(sys.argv) <= 1:
+    print "at least 1 arg required (dataset)"
+    sys.exit(1)
+    
+dataset = sys.argv[1]
+
+
+ntripleFile = "%s/%s.nt"  % (dataset, dataset)
+outputFile = "%s/baselines/freqBaseline"  % (dataset)
     
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
@@ -25,8 +22,7 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 """
 
 pigScript += """
-largeGraph = LOAD '$inputFile' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
-rdfDistinct = DISTINCT largeGraph;---to reduce size. there might be some redundant triples
+largeGraph = LOAD '$ntripleFile' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 
 ---get counts for a given resource
 subGrouped = GROUP rdfDistinct BY sub;
@@ -42,6 +38,8 @@ countUnion = UNION subCounts, predCounts, objCounts;
 unionGrouped = GROUP countUnion BY $0;
 resourceCounts = FOREACH unionGrouped GENERATE group AS resource, SUM(countUnion.$1) AS count;
 
+
+
 ---get to a triple weight
 triplesSubGrouped = JOIN rdfDistinct BY sub LEFT OUTER, resourceCounts BY resource; 
 triplesPredGrouped = JOIN triplesSubGrouped BY pred LEFT OUTER, resourceCounts BY resource; 
@@ -55,23 +53,6 @@ weightedTriples = FOREACH triplesObjGrouped {
     
     GENERATE sub AS sub, pred AS pred, obj AS obj, tripleWeight AS tripleWeight;
 }
-
----limit our results
-orderedTriples = ORDER weightedTriples BY tripleWeight DESC;
-rdfGrouped = group rdfDistinct all;
-tripleCount = foreach rdfGrouped generate COUNT(rdfDistinct) as count;
-
-limitTriples = LIMIT orderedTriples (int)(tripleCount.count * $percentage);
-
-limitTriplesGrouped = group limitTriples all;
-minRanking = FOREACH limitTriplesGrouped GENERATE MIN(limitTriples.tripleWeight) AS val;
-
---ok, so we already have 50%, and we now the minimum ranking value in our set
---remove the tuples containing this minimum ranking value
-filteredTriples = FILTER limitTriples BY tripleWeight != minRanking.val;
-
-storeTriples = FOREACH filteredTriples GENERATE $0, $1, $2, '.' ;
-distinctTriples = DISTINCT storeTriples;
 
 rmf $outputFile
 STORE distinctTriples INTO '$outputFile' USING PigStorage();
