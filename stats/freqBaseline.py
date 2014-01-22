@@ -11,7 +11,7 @@ dataset = sys.argv[1]
 
 
 ntripleFile = "%s/%s.nt"  % (dataset, dataset)
-outputFile = "%s/baselines/freqBaseline"  % (dataset)
+outputFile = "%s/roundtrip/freqBaseline"  % (dataset)
     
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
