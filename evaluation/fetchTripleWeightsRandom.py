@@ -4,14 +4,15 @@ import sys
 from os.path import dirname, basename, splitext
 
 
-if len(sys.argv) < 2:
+if len(sys.argv) < 3:
     print "at least 2 args required: dataset, and iteration. Optional 3nd arg: query triple file"
     sys.exit(1)
 
 
 dataset = sys.argv[1]
+iteration = sys.argv[2]
 
-
+origGraph = "%s/%s.nt" % (dataset, dataset)
 queryTripleFile = "%s/evaluation/qTriples" % (dataset)
 if len(sys.argv) > 3:
     queryTripleFile = sys.argv[3]
@@ -31,7 +32,7 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 pigScript += """
 ---load qtriples (this load the tuple as 1 pig field. we want to join on the -tuple- anyway)
 qTriples = LOAD '$queryTripleFile' USING TextLoader() AS (triple:chararray);
-origGraph = LOAD '$ntripleFile' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
+origGraph = LOAD '$origGraph' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 
 graphConcat = FOREACH origGraph GENERATE StringConcat(sub, '\\t', pred, '\\t', obj) AS triple;
 
