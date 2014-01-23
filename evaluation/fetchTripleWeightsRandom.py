@@ -34,8 +34,8 @@ qTriples = LOAD '$queryTripleFile' USING TextLoader() AS (triple:chararray);
 origGraph = LOAD '$ntripleFile' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 
 graphConcat = FOREACH origGraph GENERATE StringConcat(sub, '\\t', pred, '\\t', obj) AS triple;
-
-randomSampleTriples = FOREACH graphConcat GENERATE triple, RANDOM() AS ranking;
+distinctGraphConcat = DISTINCT graphConcat;
+randomSampleTriples = FOREACH distinctGraphConcat GENERATE triple, RANDOM() AS ranking;
 
 joinedTriples = JOIN qTriples BY $0, randomSampleTriples BY $0;
 

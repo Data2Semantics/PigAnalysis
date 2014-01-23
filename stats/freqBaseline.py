@@ -23,16 +23,16 @@ DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();
 
 pigScript += """
 graph = LOAD '$ntripleFile' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
-
+distinctGraph = DISTINCT graph;
 ---get counts for a given resource
-subGrouped = GROUP graph BY sub;
-subCounts = FOREACH subGrouped GENERATE group AS resource, COUNT(graph) AS count;
+subGrouped = GROUP distinctGraph BY sub;
+subCounts = FOREACH subGrouped GENERATE group AS resource, COUNT(distinctGraph) AS count;
 
-predGrouped = GROUP graph BY pred;
-predCounts = FOREACH predGrouped GENERATE group AS resource, COUNT(graph) AS count;
+predGrouped = GROUP distinctGraphConcat BY pred;
+predCounts = FOREACH predGrouped GENERATE group AS resource, COUNT(distinctGraphConcat) AS count;
 
-objGrouped = GROUP graph BY obj;
-objCounts = FOREACH objGrouped GENERATE group AS resource, COUNT(graph) AS count;
+objGrouped = GROUP distinctGraphConcat BY obj;
+objCounts = FOREACH objGrouped GENERATE group AS resource, COUNT(distinctGraphConcat) AS count;
 
 countUnion = UNION subCounts, predCounts, objCounts;
 unionGrouped = GROUP countUnion BY $0;
@@ -41,7 +41,7 @@ resourceCounts = FOREACH unionGrouped GENERATE group AS resource, SUM(countUnion
 
 
 ---get to a triple weight
-triplesSubGrouped = JOIN graph BY sub LEFT OUTER, resourceCounts BY resource; 
+triplesSubGrouped = JOIN distinctGraphConcat BY sub LEFT OUTER, resourceCounts BY resource; 
 triplesPredGrouped = JOIN triplesSubGrouped BY pred LEFT OUTER, resourceCounts BY resource; 
 triplesObjGrouped = JOIN triplesPredGrouped BY obj LEFT OUTER, resourceCounts BY resource; 
 
