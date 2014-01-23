@@ -28,11 +28,11 @@ distinctGraph = DISTINCT graph;
 subGrouped = GROUP distinctGraph BY sub;
 subCounts = FOREACH subGrouped GENERATE group AS resource, COUNT(distinctGraph) AS count;
 
-predGrouped = GROUP distinctGraphConcat BY pred;
-predCounts = FOREACH predGrouped GENERATE group AS resource, COUNT(distinctGraphConcat) AS count;
+predGrouped = GROUP distinctGraph BY pred;
+predCounts = FOREACH predGrouped GENERATE group AS resource, COUNT(distinctGraph) AS count;
 
-objGrouped = GROUP distinctGraphConcat BY obj;
-objCounts = FOREACH objGrouped GENERATE group AS resource, COUNT(distinctGraphConcat) AS count;
+objGrouped = GROUP distinctGraph BY obj;
+objCounts = FOREACH objGrouped GENERATE group AS resource, COUNT(distinctGraph) AS count;
 
 countUnion = UNION subCounts, predCounts, objCounts;
 unionGrouped = GROUP countUnion BY $0;
@@ -41,7 +41,7 @@ resourceCounts = FOREACH unionGrouped GENERATE group AS resource, SUM(countUnion
 
 
 ---get to a triple weight
-triplesSubGrouped = JOIN distinctGraphConcat BY sub LEFT OUTER, resourceCounts BY resource; 
+triplesSubGrouped = JOIN distinctGraph BY sub LEFT OUTER, resourceCounts BY resource; 
 triplesPredGrouped = JOIN triplesSubGrouped BY pred LEFT OUTER, resourceCounts BY resource; 
 triplesObjGrouped = JOIN triplesPredGrouped BY obj LEFT OUTER, resourceCounts BY resource; 
 
