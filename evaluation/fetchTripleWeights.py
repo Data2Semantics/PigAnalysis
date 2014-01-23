@@ -42,7 +42,7 @@ qTriples = LOAD '$queryTripleFile' USING TextLoader() AS (triple:chararray);
 
 sampleTriples = LOAD '$sampleFile' USING PigStorage() AS (sub:chararray, pred:chararray, obj:chararray, ranking:float);
 
-sampleTriplesConcat = FOREACH sampleTriples GENERATE StringConcat(sub, '\\t', pred, '\\t', obj) AS triple, ranking;
+sampleTriplesConcat = FOREACH sampleTriples GENERATE StringConcat(TRIM(sub), '\\t', TRIM(pred), '\\t', TRIM(obj)) AS triple, ranking;
 
 joinedTriples = JOIN qTriples BY $0, sampleTriplesConcat BY $0;
 

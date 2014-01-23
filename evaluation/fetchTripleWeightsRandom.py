@@ -34,7 +34,7 @@ pigScript += """
 qTriples = LOAD '$queryTripleFile' USING TextLoader() AS (triple:chararray);
 origGraph = LOAD '$origGraph' USING NtLoader() AS (sub:chararray, pred:chararray, obj:chararray);
 
-graphConcat = FOREACH origGraph GENERATE StringConcat(sub, '\\t', pred, '\\t', obj) AS triple;
+graphConcat = FOREACH origGraph GENERATE StringConcat(TRIM(sub), '\\t', TRIM(pred), '\\t', TRIM(obj)) AS triple;
 distinctGraphConcat = DISTINCT graphConcat;
 randomSampleTriples = FOREACH distinctGraphConcat GENERATE triple, RANDOM() AS ranking;
 
