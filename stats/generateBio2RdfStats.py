@@ -1,4 +1,8 @@
 #!/usr/bin/python
+
+#
+# part of these stats are based on the bio2rdf dataset metrics
+#
 from org.apache.pig.scripting import Pig
 import sys
 
@@ -49,6 +53,9 @@ typeTriples = FILTER ntriples BY pred == '<http://www.w3.org/1999/02/22-rdf-synt
 ---we want 
 groupedTypes = GROUP typeTriples BY obj;
 typeCounts = FOREACH groupedTypes GENERATE group, COUNT(typeTriples);
+allTypes = FOREACH typeTriples GENERATE obj;
+distinctTypes = DISTINCT allTypes;
+
 
 --- get predicates and the number of unique literals they link to
 predLitTriples = FILTER ntriples BY SUBSTRING(obj, 0, 1) == '"';
@@ -57,6 +64,9 @@ predLitCombinations = FOREACH predLitTriples GENERATE pred, obj;
 distinctPredLitCombinations = DISTINCT predLitCombinations;
 groupedPredLitCombinations = GROUP distinctPredLitCombinations BY pred;
 predLitCount = FOREACH groupedPredLitCombinations GENERATE group, COUNT(distinctPredLitCombinations);
+allLiterals = FOREACH predLitCombinations GENERATE obj;
+distinctLiterals = DISTINCT allLiterals;
+
 
 --- get predicates and the number of unique URIs they link to
 predObjTriples = FILTER ntriples BY SUBSTRING(obj, 0, 1) == '<';
@@ -114,8 +124,14 @@ STORE objCount INTO '$dataset/stats/objCount' USING PigStorage();
 rmf $dataset/stats/typeCounts;
 STORE typeCounts INTO '$dataset/stats/typeCounts' USING PigStorage();
 
+rmf $dataset/stats/typeCount;
+STORE distinctTypes INTO '$dataset/stats/typeCount' USING PigStorage();
+
 rmf $dataset/stats/predLitCounts;
 STORE predLitCount INTO '$dataset/stats/predLitCounts' USING PigStorage();
+
+rmf $dataset/stats/distinctLiterals;
+STORE distinctLiterals INTO '$dataset/stats/distinctLiterals' USING PigStorage();
 
 rmf $dataset/stats/predObjCounts;
 STORE predObjCount INTO '$dataset/stats/predObjCounts' USING PigStorage();
