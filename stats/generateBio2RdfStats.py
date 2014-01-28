@@ -55,10 +55,14 @@ groupedTypes = GROUP typeTriples BY obj;
 typeCounts = FOREACH groupedTypes GENERATE group, COUNT(typeTriples);
 allTypes = FOREACH typeTriples GENERATE obj;
 distinctTypes = DISTINCT allTypes;
+distinctTypesGrouped = GROUP distinctTypes ALL;
+distinctTypesCount = FOREACH distinctTypesGrouped GENERATE COUNT(distinctTypes);
 
 
 --- get predicates and the number of unique literals they link to
 predLitTriples = FILTER ntriples BY SUBSTRING(obj, 0, 1) == '"';
+predLitTriplesGroupedAll = GROUP predLitTriples ALL;
+literalsCount = FOREACH predLitTriplesGroupedAll GENERATE COUNT(predLitTriples);
 ---remove subject, so we can make our set distinct
 predLitCombinations = FOREACH predLitTriples GENERATE pred, obj;
 distinctPredLitCombinations = DISTINCT predLitCombinations;
@@ -66,7 +70,8 @@ groupedPredLitCombinations = GROUP distinctPredLitCombinations BY pred;
 predLitCount = FOREACH groupedPredLitCombinations GENERATE group, COUNT(distinctPredLitCombinations);
 allLiterals = FOREACH predLitCombinations GENERATE obj;
 distinctLiterals = DISTINCT allLiterals;
-
+distinctLiteralsGrouped = GROUP distinctLiterals ALL;
+distinctLiteralsCount = FOREACH distinctLiteralsGrouped GENERATE COUNT(distinctLiterals);
 
 --- get predicates and the number of unique URIs they link to
 predObjTriples = FILTER ntriples BY SUBSTRING(obj, 0, 1) == '<';
@@ -124,14 +129,17 @@ STORE objCount INTO '$dataset/stats/objCount' USING PigStorage();
 rmf $dataset/stats/typeCounts;
 STORE typeCounts INTO '$dataset/stats/typeCounts' USING PigStorage();
 
-rmf $dataset/stats/typeCount;
-STORE distinctTypes INTO '$dataset/stats/typeCount' USING PigStorage();
+rmf $dataset/stats/distinctTypeCount;
+STORE distinctTypesCount INTO '$dataset/stats/distinctTypeCount' USING PigStorage();
 
 rmf $dataset/stats/predLitCounts;
 STORE predLitCount INTO '$dataset/stats/predLitCounts' USING PigStorage();
 
-rmf $dataset/stats/distinctLiterals;
-STORE distinctLiterals INTO '$dataset/stats/distinctLiterals' USING PigStorage();
+rmf $dataset/stats/distinctLiteralCount;
+STORE distinctLiteralsCount INTO '$dataset/stats/distinctLiteralCount' USING PigStorage();
+
+rmf $dataset/stats/literalCount;
+STORE literalsCount INTO '$dataset/stats/literalCount' USING PigStorage();
 
 rmf $dataset/stats/predObjCounts;
 STORE predObjCount INTO '$dataset/stats/predObjCounts' USING PigStorage();
