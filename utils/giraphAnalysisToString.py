@@ -25,14 +25,6 @@ dictPath = "%s_dict" % (rewritePath)
 output = rankedLongs[:-5]; #remove the '_long' annotation
 pigScript = """
 
-REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
-DEFINE UnorderedPairs datafu.pig.bags.UnorderedPairs();
-DEFINE Enumerate com.data2semantics.pig.udfs.EnumerateSafe();
-REGISTER d2s4pig/target/d2s4pig-1.0.jar
-DEFINE NtLoader com.data2semantics.pig.loaders.NtLoader();
-/*DEFINE LONGHASH com.data2semantics.pig.udfs.LongHash();*/
-REGISTER piggybank/contrib/piggybank/java/piggybank.jar
-DEFINE LONGHASH org.apache.pig.piggybank.evaluation.string.HashFNV();
 longRankings = LOAD '$rankedLongs' USING PigStorage() AS (resourceId:long, ranking:float);
 dict = LOAD '$dictPath' USING PigStorage() AS (dictText:chararray, dictLong:long);
 
