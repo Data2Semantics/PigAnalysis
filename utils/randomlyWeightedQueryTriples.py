@@ -2,7 +2,7 @@
 from org.apache.pig.scripting import Pig
 import sys
 
-if len(sys.argv) <= 2:
+if len(sys.argv) <= 1:
     print "at least 1 arg required (dataset)"
     sys.exit(1)
 dataset = sys.argv[1]
