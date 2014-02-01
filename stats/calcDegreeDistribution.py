@@ -14,13 +14,13 @@ degreeFile = "%s/evaluation/degree"  % (dataset)
 degreeDistFile = "%s/evaluation/degreeDist"  % (dataset)
 
 pigScript = """
-outdegree = LOAD '$outdegreeFile' USING PigLoader() AS (resource:chararray, ranking:double);
-indegree = LOAD '$indegreeFile' USING PigLoader() AS (resource:chararray, ranking:double);
+outdegree = LOAD '$outdegreeFile' USING PigStorage() AS (resource:chararray, ranking:double);
+indegree = LOAD '$indegreeFile' USING PigStorage() AS (resource:chararray, ranking:double);
 
 
-joinedGraph = JOIN outdegree by resource, indegree by resources;
+joinedGraph = JOIN outdegree by resource, indegree by resource;
 
-degree = FOREACH joinedGraph GENERATE $0 as resource, SUM($1, $3) AS degreeVal;
+degree = FOREACH joinedGraph GENERATE $0 as resource, SUM({$1,$3}) AS degreeVal;
 
 STORE degree INTO '$degreeFile' USING PigStorage();
 
