@@ -13,6 +13,8 @@ if len(sys.argv) > 1:
     inputFile = sys.argv[1]
 
 outputFile = "%s/rewrite/resourceWithoutLit" % (dirname(inputFile))
+if (len(sys.argv) == 3):
+    outputFile = sys.argv[2]
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
 DEFINE UnorderedPairs datafu.pig.bags.UnorderedPairs();
