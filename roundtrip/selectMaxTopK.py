@@ -2,7 +2,7 @@
 from org.apache.pig.scripting import Pig
 import sys
 
-inputFile = "dbp/roundtrip/directed_pagerank.nt"
+inputFile = "bio2rdf/roundtrip/resourceSimple_outdegree"
 outputFile = ""
 percentage = "0.5"
 exactK = 0
@@ -22,8 +22,8 @@ if len(sys.argv) > 2:
 if len(sys.argv) > 3:
     outputFile = sys.argv[3]
 else:
-    outputFile = inputFile + "_max" + sys.argv[2] + ".nt"
-    
+    outputFile = inputFile + "_" + sys.argv[2] + ".nt"
+
 pigScript = """
 REGISTER datafu/dist/datafu-0.0.9-SNAPSHOT.jar;
 DEFINE UnorderedPairs datafu.pig.bags.UnorderedPairs();
