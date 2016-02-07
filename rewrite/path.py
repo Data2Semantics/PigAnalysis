@@ -3,7 +3,7 @@ from org.apache.pig.scripting import Pig
 import sys
 from os.path import dirname, basename, splitext
 
-inputFile = "dbp/dbp.nt"
+inputFile = "dbpedia/dbpedia.nt"
 
 if len(sys.argv) <= 1:
     print "at least 1 arg required (input .nt file). optional arg: output file"
